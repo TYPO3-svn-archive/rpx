@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin &quot;tx_rpx_pi1&quot;</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="title">RPX Login Box</label>
+			<label index="displayMode">Choose Your Widget Style</label>
+			<label index="embedded">embedded</label>
+			<label index="modal">modal overlay</label>
+		</languageKey>
+	</data>
+</T3locallang>

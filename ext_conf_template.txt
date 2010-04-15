@@ -1,0 +1,4 @@
+	# cat=basic//10; type=inpit; label=Api key
+api_key =
+	# cat=basic//10; type=inpit; label=RPX Domain
+rpx_domain =
