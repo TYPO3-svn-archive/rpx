@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'Exception.php';
+require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . 'Exception.php';
 /**
  * Service to call the Connector
  *
@@ -128,7 +128,7 @@ class tx_rpx_Core_Connector {
 	 * @param DOMDocument $parsed_response
 	 * @return string
 	 */
-	private function _getMessageStatus(RpxException $parsed_response) {
+	private function _getMessageStatus(DOMDocument $parsed_response) {
 		$root = $parsed_response->childNodes->item ( 0 );
 		$node = $root->attributes->getNamedItem ( 'stat' );
 		return $node->value;
@@ -159,6 +159,7 @@ class tx_rpx_Core_Connector {
 		curl_setopt ( $curl, CURLOPT_POSTFIELDS, $post_data );
 		curl_setopt ( $curl, CURLOPT_URL, $url );
 		curl_setopt ( $curl, CURLOPT_WRITEFUNCTION, array (&$this, "_writeResponseData" ) );
+		curl_setopt ( $curl, CURLOPT_SSL_VERIFYPEER, false );
 		curl_exec ( $curl );
 		$code = curl_getinfo ( $curl, CURLINFO_HTTP_CODE );
 		if (! $code) {

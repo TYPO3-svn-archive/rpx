@@ -37,55 +37,206 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	/**
 	 * @var string
 	 */
-	public $prefixId = 'tx_rpx_sv1'; // Same as class name
+	protected $prefixId = 'tx_rpx_Service_Auth'; // Same as class name
 	/**
 	 * @var string
 	 */
-	public $scriptRelPath = 'sv1/class.tx_rpx_sv1.php'; // Path to this script relative to the extension dir.
+	protected $scriptRelPath = 'classes/Service/Auth.php'; // Path to this script relative to the extension dir.
 	/**
 	 * @var string
 	 */
-	public $extKey = 'rpx'; // The extension key.
+	protected $extKey = 'rpx'; // The extension key.
 	/**
-	 * [Put your description here]
-	 *
-	 * @return	[type]		...
+	 * @var $conf array
+	 */
+	private $conf;
+	/**
+	 * @var $tx_rpx_Core_UserStorage
+	 */
+	private $userStorage;
+	/**
+	 * @var tx_rpx_Core_Connector
+	 */
+	private $connector;
+	/**
+	 * @var tx_rpx_Core_Factory
+	 */
+	private $factory;
+	/**
+	 * @var tx_rpx_Core_Encryption
+	 */
+	private $encryption;
+	/**
+	 * @var string
+	 */
+	private $fe_user_groups;
+	/**
+	 * @var string
+	 */
+	private $redirect_page;
+	
+	/**
+	 * @return	boolean
 	 */
 	public function init() {
 		$available = parent::init ();
-		
-		// Here you can initialize your class.
-		
-
-		// The class have to do a strict check if the service is available.
-		// The needed external programs are already checked in the parent class.
-		
-
-		// If there's no reason for initialization you can remove this function.
-		
-
+		$this->conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] [$this->extKey] );
+		if (FALSE === isset ( $this->conf ['imported_fe_user_prefix'] )) {
+			throw new Exception ( 'imported_fe_user_prefix isnot set in extConf' );
+		}
+		if (FALSE === isset ( $this->conf ['api_key'] )) {
+			throw new Exception ( 'api_key isnot set in extConf' );
+		}
+		if (FALSE === isset ( $this->conf ['rpx_domain'] )) {
+			throw new Exception ( 'rpx_domain isnot set in extConf' );
+		}
 		return $available;
 	}
-	
 	/**
-	 * [Put your description here]
-	 * performs the service processing
-	 *
-	 * @param	string		Content which should be processed.
-	 * @param	string		Content type
-	 * @param	array		Configuration array
-	 * @return	boolean
+	 * @param string $subType
+	 * @param array $loginData
+	 * @param array $authenticationInformation
 	 */
-	public function process($content = '', $type = '', $conf = array()) {
+	public function initAuth($subType, array $loginData, array $authenticationInformation) {
+		$this->loginData = $loginData;
+		$this->authInfo = $authenticationInformation;
+		$this->username = $this->loginData ['uname'];
+	}
+	/**
+	 * Find a user (eg. look up the user record in database when a login is sent)
+	 *
+	 * @return	mixed		user array or false
+	 */
+	
+	public function getUser() {
 		
-		// Depending on the service type there's not a process() function.
-		// You have to implement the API of that service type.
-		
-
+		if ($this->loginData ['status'] === 'login') {
+			if ($this->isImportedLoginName ()) {
+				$user = array ();
+				$user ['invalid'] = TRUE;
+				return $user;
+			}
+			if ($this->isRPXResponse ()) {
+				try {
+					$responseXml = $this->getConnector ()->auth_info ( $_POST ['token'] );
+					$profile = $this->getFactory ()->createProfile ( $responseXml );
+					return $this->autoCreateUser ( $profile );
+				} catch ( tx_rpx_Core_Exception $e ) {
+					//exit('Error on rpx login: '.$e->getMessage());
+					return FALSE;
+				}
+			}
+		}
 		return FALSE;
 	}
+	/**
+	 * Authenticate a user
+	 *
+	 * @param	array		Data of user.
+	 * @return	integer 100|200|-1
+	 */
+	public function authUser($user) {
+		if (isset ( $user ['invalid'] ) && $user ['invalid'] === TRUE) {
+			return - 1;
+		}
+		return 200;
+	
+	}
+	/**
+	 * @return tx_rpx_Core_UserStorage
+	 */
+	protected function getUserStorage() {
+		if (FALSE === isset ( $this->userStorage )) {
+			require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . 'UserStorage.php';
+			$this->userStorage = t3lib_div::makeInstance ( 'tx_rpx_Core_UserStorage' );
+		}
+		return $this->userStorage;
+	}
+	/**
+	 * @return tx_rpx_Core_Connector
+	 */
+	protected function getConnector() {
+		if (FALSE === isset ( $this->connector )) {
+			require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . 'Connector.php';
+			
+			$this->connector = t3lib_div::makeInstance ( 'tx_rpx_Core_Connector', $this->conf ['api_key'], $this->conf ['rpx_domain'] );
+		}
+		return $this->connector;
+	}
+	/**
+	 * @return tx_rpx_Core_Factory
+	 */
+	protected function getFactory() {
+		if (FALSE === isset ( $this->factory )) {
+			require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . 'Factory.php';
+			$this->factory = t3lib_div::makeInstance ( 'tx_rpx_Core_Factory' );
+		}
+		return $this->factory;
+	}
+	/**
+	 * @return tx_rpx_Core_Encryption
+	 */
+	protected function getEncryption() {
+		if (FALSE === isset ( $this->encryption )) {
+			require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . 'Encryption.php';
+			$this->encryption = t3lib_div::makeInstance ( 'tx_rpx_Core_Encryption' );
+		}
+		return $this->encryption;
+	}
+	/**
+	 * @return boolean
+	 */
+	private function isImportedLoginName() {
+		return FALSE !== stripos ( $this->username, $this->conf ['imported_fe_user_prefix'] );
+	}
+	/**
+	 * @param tx_rpx_Core_Profile $profile
+	 * @return array
+	 */
+	private function autoCreateUser(tx_rpx_Core_Profile $profile) {
+		$table = $this->authInfo ['db_user'] ['table'];
+		$prefix = $this->conf ['imported_fe_user_prefix'];
+		$check_pid_clause = $this->authInfo ['db_user'] ['check_pid_clause'];
+		$enable_clause = $this->authInfo ['db_user'] ['enable_clause'];
+		$checkPidList = $this->authInfo ['db_user'] ['checkPidList']; //TODO verify valkue
+		$this->parseRuntimeConfig ();
+		try {
+			$user = $this->getUserStorage ()->getUser ( $profile, $table, $check_pid_clause, $enable_clause );
+		} catch ( tx_rpx_Core_UserNotFoundException $e ) {
+			
+			$this->getUserStorage ()->add ( $profile, $prefix, $table, $checkPidList, $this->fe_user_groups );
+			$user = $this->getUserStorage ()->getUser ( $profile, $table, $check_pid_clause, $enable_clause );
+		}
+		return $user;
+	}
+	/**
+	 * @return string
+	 */
+	private function parseRuntimeConfig() {
+		if (FALSE === $_GET ['conf']) {
+			throw new tx_rpx_Core_Exception ( 'Invalid return url' );
+		}
+		$conf = $_GET ['conf'];
+		$values = $this->getEncryption ()->decrypt ( $conf );
+		list ( $this->fe_user_groups, $this->redirect_page ) = explode ( ':', $values );
+		$this->redirect ();
+	}
+	/**
+	 * @return boolean
+	 */
+	private function isRPXResponse() {
+		return isset ( $_POST ['token'] );
+	}
+	/**
+	 * redirect to page if it requested
+	 */
+	public function redirect() {
+		if (! empty ( $this->redirect_page )) {
+			header ( 'HTTP/1.1 303 See Other' );
+			header ( 'Location: ' . t3lib_div::locationHeaderUrl ( $this->redirect_page ) );
+		}
+	}
 }
-
 if (defined ( 'TYPO3_MODE' ) && $TYPO3_CONF_VARS [TYPO3_MODE] ['XCLASS'] ['ext/rpx/classes/Service/Auth.php']) {
 	include_once ($TYPO3_CONF_VARS [TYPO3_MODE] ['XCLASS'] ['ext/rpx/classes/Service/Auth.php']);
 }

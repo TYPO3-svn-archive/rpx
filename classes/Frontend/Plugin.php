@@ -25,6 +25,7 @@
  * Frontend Plugin to render the login box of the RPX
  */
 require_once (PATH_tslib . 'class.tslib_pibase.php');
+require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR.'Core'.DIRECTORY_SEPARATOR. 'Encryption.php';
 /**
  * Plugin 'RPX Login Box' for the 'rpx' extension.
  *
@@ -40,7 +41,7 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 	/**
 	 * @var string
 	 */
-	public $scriptRelPath = 'pi1/class.tx_rpx_pi1.php'; // Path to this script relative to the extension dir.
+	public $scriptRelPath = 'classes/Frontend/Plugin.php'; // Path to this script relative to the extension dir.
 	/**
 	 * @var string
 	 */
@@ -50,6 +51,10 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 	 */
 	public $pi_checkCHash = true;
 	/**
+	 * @var array
+	 */
+	private $ext_conf;
+	/**
 	 * The main method of the PlugIn
 	 *
 	 * @param	string		$content: The PlugIn content
@@ -58,40 +63,38 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 	 */
 	public function main($content, $conf) {
 		$this->conf = $conf;
-		
+		$this->ext_conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] [$this->extKey] );
 		$this->pi_setPiVarDefaults ();
 		$this->pi_loadLL ();
 		$this->pi_initPIflexForm ();
 		$displayMode = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'displayMode' );
-		
-		$tokenUrl = $this->getTockenUrl ();
-		
+		$tokenUrl = $this->getTokenUrl ();
 		if ($displayMode === 'embedded') {
-			$url = 'https://ajung.rpxnow.com/openid/embed?token_url=' . $tokenUrl;
+			$url = $this->getRPXDomain().'openid/embed?token_url=' . $tokenUrl;
 			$content = ' <iframe src="' . $url . '"  scrolling="no"  frameBorder="no" allowtransparency="true"  style="width:400px;height:240px"></iframe> ';
 		} else {
-			/**
-			 * <script type="text/javascript">
-  var rpxJsHost = (("https:" == document.location.protocol) ? "https://" : "http://static.");
-  document.write(unescape("%3Cscript src='" + rpxJsHost +
-"rpxnow.com/js/lib/rpx.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-  RPXNOW.overlay = true;
-  RPXNOW.language_preference = 'en';
-</script>
-
-
-			 */
-			$url = 'https://ajung.rpxnow.com/openid/v2/signin?token_url=' . $tokenUrl;
-			$content = ' <a class="rpxnow" onclick="return false;" href="' . $url . '"> Sign In </a>';
+			$js = '';
+			$js .= 'var rpxJsHost = (("https:" == document.location.protocol) ? "https://" : "http://static.");'.PHP_EOL;
+			$js .= 'var rpxJsHost = document.write(unescape("%3Cscript src=\'" + rpxJsHost + "rpxnow.com/js/lib/rpx.js\' type=\'text/javascript\'%3E%3C/script%3E"));'.PHP_EOL;
+			$js .= 'RPXNOW.overlay = true;'.PHP_EOL;
+			$js .= 'RPXNOW.language_preference = '.$this->LLkey.';'.PHP_EOL;
+			$GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('tx_rpx',$js, FALSE);
+			$url = $this->getRPXDomain().'openid/v2/signin?token_url=' . $tokenUrl;
+			$content = '<br/><br/><br/><br/><br/><a class="rpxnow" onclick="return false;" href="' . $url . '"> '.$this->pi_getLL('sign_in_label').' </a>';
 		}
 		return $this->pi_wrapInBaseClass ( $content );
 	}
 	/**
 	 * @return string
 	 */
-	private function getTockenUrl() {
+	private function getRPXDomain(){
+		return $this->ext_conf['rpx_domain'];
+	}
+
+	/**
+	 * @return string
+	 */
+	private function getTokenUrl() {
 		$url = $this->getCurrentUrl ();
 		$url = $this->addLoginParameters ( $url );
 		return urlencode ( $url );
@@ -125,7 +128,17 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 	 * @return string
 	 */
 	private function addLoginParameters($url) {
-		//todo add login params to trigger auth service
+		if(FALSE === strpos($url,'?')){
+			$url .= '?';
+		}else{
+			$url .= '&';
+		}
+		$url .= 'logintype=login';
+		$fe_groups = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'fe_groups');
+		$redirectPageId = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'redirectPageId');
+		$redirectPage = $this->cObj->getTypoLink_URL($redirectPageId);
+		$encryption = t3lib_div::makeInstance('tx_rpx_Core_Encryption');
+		$url .= '&conf='.$encryption->encrypt($fe_groups.':'.$redirectPage);
 		return $url;
 	}
 }

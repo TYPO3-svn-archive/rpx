@@ -1,4 +1,9 @@
-	# cat=basic//10; type=inpit; label=Api key
+	# cat=basic//10; type=input; label=Api key
 api_key =
-	# cat=basic//10; type=inpit; label=RPX Domain
+	# cat=basic//10; type=input; label=RPX Domain
 rpx_domain =
+	# cat=basic//10; type=input; label=Imported fe_user prefix
+imported_fe_user_prefix = tx_rpx
+	# cat=basic//10; type=input; label= Encryption key
+encryption_key = 
+

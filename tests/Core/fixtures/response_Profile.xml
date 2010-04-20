@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rsp stat="ok">
+	<profile>
+		<displayName>max.muster</displayName>
+		<email>max.muster@googlemail.com</email>
+		<identifier>https://www.google.com/accounts/o8/id?id=AIsss</identifier>
+		<name>
+			<givenName>Max</givenName>
+			<familyName>Mustermann</familyName>
+			<formatted>Max Mustermann</formatted>
+		</name>
+		<preferredUsername>max.muster</preferredUsername>
+		<providerName>Google</providerName>
+		<verifiedEmail>max.muster@googlemail.com</verifiedEmail>
+		<googleUserId>123456</googleUserId>
+	</profile>
+</rsp>
