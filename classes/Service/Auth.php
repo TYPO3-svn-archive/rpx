@@ -81,14 +81,14 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	public function init() {
 		$available = parent::init ();
 		$this->conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] [$this->extKey] );
-		if (FALSE === isset ( $this->conf ['imported_fe_user_prefix'] )) {
-			throw new Exception ( 'imported_fe_user_prefix isnot set in extConf' );
+		if (FALSE === isset ( $GLOBALS ['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
+			return FALSE;
 		}
 		if (FALSE === isset ( $this->conf ['api_key'] )) {
-			throw new Exception ( 'api_key isnot set in extConf' );
+			return FALSE;
 		}
 		if (FALSE === isset ( $this->conf ['rpx_domain'] )) {
-			throw new Exception ( 'rpx_domain isnot set in extConf' );
+			return FALSE;
 		}
 		return $available;
 	}

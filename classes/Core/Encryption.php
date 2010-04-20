@@ -37,11 +37,10 @@ class tx_rpx_Core_Encryption {
 	 * @throws tx_rpx_Core_Exception
 	 */
 	private function getEncryptionKey(){
-		$ext_conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['rpx'] );
-		if(FALSE === isset($ext_conf['encryption_key']) || trim($ext_conf['encryption_key']) ===''){
-			throw new tx_rpx_Core_Exception('encryption_key not set or empty');
+		if(FALSE === isset($GLOBALS ['TYPO3_CONF_VARS']['SYS']['encryptionKey'])){
+			throw new tx_rpx_Core_Exception('encryptionKey not set');
 		}
-		return $ext_conf['encryption_key'];
+		return $GLOBALS ['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
 	}
 }
 if (defined ( 'TYPO3_MODE' ) && $TYPO3_CONF_VARS [TYPO3_MODE] ['XCLASS'] ['ext/rpx/classes/Core/Encryption.php']) {
