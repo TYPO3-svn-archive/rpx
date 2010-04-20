@@ -37,7 +37,7 @@ class Core_UserStorage_testcase extends tx_phpunit_database_testcase {
 	public function add() {
 		$profile = new tx_rpx_Core_Profile ();
 		$profile->setIdentifier ( uniqid ( 'identitier' ) );
-		$this->userStorage->add ( $profile, 'testprefix', 'fe_users', 2, array () );
+		$this->userStorage->add ( $profile, 'testprefix', 'fe_users', 2, '1,2','username' ,'password','usergroup');
 	
 	}
 	/**
@@ -58,7 +58,7 @@ class Core_UserStorage_testcase extends tx_phpunit_database_testcase {
 		$profile = new tx_rpx_Core_Profile ();
 		$profile->setIdentifier ( uniqid ( 'identitier' ) );
 		$profile->setVerifiedEmail ( uniqid ( 'email' ) );
-		$this->userStorage->add ( $profile, 'testprefix', 'fe_users', 2, array () );
+		$this->userStorage->add ( $profile, 'testprefix', 'fe_users', 2, '1,2','username' ,'password','usergroup' );
 		$record = $this->userStorage->getUser ( $profile, 'fe_users' );
 		$this->assertEquals($profile->getIdentifier(),$record['tx_rpx_identifier']);
 		$this->assertContains('testprefix',$record['username']);

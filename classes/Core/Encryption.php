@@ -5,32 +5,22 @@ require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . 'Exception.php';
  */
 class tx_rpx_Core_Encryption {
 	/**
-	 * @param string $value
-	 * @return string
-	 */
-	public function encrypt($value){
-		$verify = $this->creatHash($value);
-		return base64_encode($value.'|'.$verify);
-	}
-	/**
-	 * @param string $encrypted
+	 * @param array $values
+	 * @param string $verify
 	 * @return string
 	 * @throws tx_rpx_Core_Exception
 	 */
-	public function decrypt($encrypted){
-		$encrypted = base64_decode($encrypted);
-		list($value,$verify) = explode('|',$encrypted);
-		if($verify !== $this->creatHash($value)){
+	public function validate(array $values,$verify){
+		if($verify !== $this->creatHash($values)){
 			throw new tx_rpx_Core_Exception('invalid verify value'.$verify);
 		}
-		return $value;
 	}
 	/**
-	 * @param string $value
+	 * @param string $values
 	 * @return string
 	 */
-	private function creatHash($value){
-		return md5($this->getEncryptionKey().$value.$this->getEncryptionKey());
+	public function creatHash(array $values){
+		return md5($this->getEncryptionKey().serialize($values).$this->getEncryptionKey());
 	}
 	/**
 	 * @return string

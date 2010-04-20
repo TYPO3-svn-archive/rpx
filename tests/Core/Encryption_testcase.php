@@ -36,29 +36,34 @@ class Core_Encryption_testcase extends tx_phpunit_testcase {
 	 * @expectedException tx_rpx_Core_Exception
 	 */
 	public function encryptWithException() {
-		$ext_conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['rpx'] );
-		unset($ext_conf['encryption_key']);
-		$GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['rpx'] = unserialize($ext_conf);
-		$this->encryption->encrypt('dd');
+		unset($GLOBALS ['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+		$this->encryption->creatHash(array('dd'));
 	}
 	/**
-	 * Tests tx_rpx_Core_Encryption->encrypt()
+	 * Tests tx_rpx_Core_Encryption->creatHash()
 	 * @test
 	 */
-	public function encrypt() {
+	public function creatHash() {
 		$value = '1,233';
-		$test = $this->encryption->encrypt($value);
+		$test = $this->encryption->creatHash(array($value));
 		$this->assertNotEquals($value,$test);
 	}
 	/**
 	 * Tests tx_rpx_Core_Encryption->decrypt()
 	 * @test
 	 */
-	public function decrypt() {
+	public function validate() {
 		$value = '1,233';
-		$test = $this->encryption->encrypt($value);
-		$test = $this->encryption->decrypt($test);
-		$this->assertEquals($value,$test);
+		$test = $this->encryption->creatHash(array($value));
+		$this->encryption->validate(array($value),$test);
+	}
+	/**
+	 * Tests tx_rpx_Core_Encryption->decrypt()
+	 * @test
+	 * @expectedException tx_rpx_Core_Exception
+	 */
+	public function validateWithException() {
+		$this->encryption->validate(array('1,233'),'123');
 	}
 
 }

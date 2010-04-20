@@ -198,13 +198,16 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 		$prefix = $this->conf ['imported_fe_user_prefix'];
 		$check_pid_clause = $this->authInfo ['db_user'] ['check_pid_clause'];
 		$enable_clause = $this->authInfo ['db_user'] ['enable_clause'];
-		$checkPidList = $this->authInfo ['db_user'] ['checkPidList']; //TODO verify valkue
+		$checkPidList = $this->authInfo ['db_user'] ['checkPidList'];
+		$username_column = $this->authInfo ['db_user'] ['username_column'];
+		$userident_column = $this->authInfo ['db_user'] ['userident_column'];
+		$usergroup_column = $this->authInfo ['db_user'] ['usergroup_column'];
 		$this->parseRuntimeConfig ();
 		try {
 			$user = $this->getUserStorage ()->getUser ( $profile, $table, $check_pid_clause, $enable_clause );
 		} catch ( tx_rpx_Core_UserNotFoundException $e ) {
 			
-			$this->getUserStorage ()->add ( $profile, $prefix, $table, $checkPidList, $this->fe_user_groups );
+			$this->getUserStorage ()->add ( $profile, $prefix, $table, $checkPidList, $this->fe_user_groups,$username_column ,$userident_column,$usergroup_column);
 			$user = $this->getUserStorage ()->getUser ( $profile, $table, $check_pid_clause, $enable_clause );
 		}
 		return $user;
@@ -213,12 +216,15 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	 * @return string
 	 */
 	private function parseRuntimeConfig() {
-		if (FALSE === $_GET ['conf']) {
+		if (FALSE === $_GET ['verify']) {
 			throw new tx_rpx_Core_Exception ( 'Invalid return url' );
 		}
-		$conf = $_GET ['conf'];
-		$values = $this->getEncryption ()->decrypt ( $conf );
-		list ( $this->fe_user_groups, $this->redirect_page ) = explode ( ':', $values );
+		$pid = $_GET ['pid'];
+		$this->fe_user_groups = $_GET ['fe_groups'];
+		$this->redirect_page = $_GET ['redirect'];
+		$verify = $_GET ['verify'];
+		
+		$this->getEncryption ()->validate ( array('pid'=>$pid,'fe_groups'=>$this->fe_user_groups,'redirect'=>$this->redirect_page),$verify );
 		$this->redirect ();
 	}
 	/**

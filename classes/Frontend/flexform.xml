@@ -33,6 +33,19 @@
 							</config>
 						</TCEforms>
 					</displayMode>
+					<pid>
+						<TCEforms>
+							<label>LLL:EXT:rpx/classes/Frontend/locallang.xml:pid</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>1</minitems>
+							</config>
+						</TCEforms>
+					</pid>
 					<fe_groups>
 						<TCEforms>
 							<label>LLL:EXT:rpx/classes/Frontend/locallang.xml:fe_groups</label>

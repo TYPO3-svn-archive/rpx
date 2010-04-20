@@ -13,8 +13,7 @@
 			<label index="sign_in_label">Sign In</label>
 			<label index="redirectPageId">Redirect Page</label>
 			<label index="fe_groups">User Groups on autocreate</label>
-			
-			
+			<label index="pid">Page where the users stored</label>
 		</languageKey>
 	</data>
 </T3locallang>

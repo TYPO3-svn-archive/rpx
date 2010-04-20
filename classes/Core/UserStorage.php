@@ -11,20 +11,23 @@ class tx_rpx_Core_UserStorage {
 	 * @param string $table
 	 * @param string $pid
 	 * @param string $groups
+	 * @param string $username_column
+	 * @param string $userident_column
+	 * @param string $usergroup_column
 	 */
-	public function add(tx_rpx_Core_Profile $profile,$prefix,$table,$pid,$groups){
+	public function add(tx_rpx_Core_Profile $profile,$prefix,$table,$pid,$groups,$username_column,$userident_column,$usergroup_column){
 		$values = array();
 		$values['tx_rpx_identifier'] = $profile->getIdentifier();
-		$values['username'] = uniqid($prefix, TRUE);
-		$values['password'] = uniqid($prefix,TRUE);
+		$values[$username_column] = uniqid($prefix, TRUE);
+		$values[$userident_column] = uniqid($prefix,TRUE);
 		$values['pid'] = $pid;
-		$values['usergroup'] = $groups;
+		$values[$usergroup_column] = $groups;
 		$values['crdate'] = time();
 		if(null !== $profile->getVerifiedEmail()){
 			$values['email'] = $profile->getVerifiedEmail();
 		}
 		if(FALSE === $this->getDb()->exec_INSERTquery($table,$values)){
-			throw new tx_rpx_Core_DatabaseException('insert not successfull');
+			throw new tx_rpx_Core_DatabaseException('insert not successfull'.mysql_error());
 		}
 	}
 	/**

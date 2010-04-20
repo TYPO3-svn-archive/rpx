@@ -135,10 +135,15 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 		}
 		$url .= 'logintype=login';
 		$fe_groups = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'fe_groups');
+		$pid = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'pid');
+		
 		$redirectPageId = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'redirectPageId');
 		$redirectPage = $this->cObj->getTypoLink_URL($redirectPageId);
 		$encryption = t3lib_div::makeInstance('tx_rpx_Core_Encryption');
-		$url .= '&conf='.$encryption->encrypt($fe_groups.':'.$redirectPage);
+		$url .= '&pid='.$pid;
+		$url .= '&fe_groups='.$fe_groups;
+		$url .= '&redirect='.$redirectPage;
+		$url .= '&verify='.$encryption->creatHash(array('pid'=>$pid,'fe_groups'=>$fe_groups,'redirect'=>$redirectPage));
 		return $url;
 	}
 }
