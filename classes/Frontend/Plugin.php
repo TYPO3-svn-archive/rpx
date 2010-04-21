@@ -69,20 +69,34 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 		$this->pi_initPIflexForm ();
 		$displayMode = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'displayMode' );
 		$tokenUrl = $this->getTokenUrl ();
-		if ($displayMode === 'embedded') {
-			$url = $this->getRPXDomain().'openid/embed?token_url=' . $tokenUrl;
-			$content = ' <iframe src="' . $url . '"  scrolling="no"  frameBorder="no" allowtransparency="true"  style="width:400px;height:240px"></iframe> ';
-		} else {
-			$js = '';
-			$js .= 'var rpxJsHost = (("https:" == document.location.protocol) ? "https://" : "http://static.");'.PHP_EOL;
-			$js .= 'var rpxJsHost = document.write(unescape("%3Cscript src=\'" + rpxJsHost + "rpxnow.com/js/lib/rpx.js\' type=\'text/javascript\'%3E%3C/script%3E"));'.PHP_EOL;
-			$js .= 'RPXNOW.overlay = true;'.PHP_EOL;
-			$js .= 'RPXNOW.language_preference = '.$this->LLkey.';'.PHP_EOL;
-			$GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('tx_rpx',$js, FALSE);
-			$url = $this->getRPXDomain().'openid/v2/signin?token_url=' . $tokenUrl;
-			$content = '<br/><br/><br/><br/><br/><a class="rpxnow" onclick="return false;" href="' . $url . '"> '.$this->pi_getLL('sign_in_label').' </a>';
+		if($this->isConfigured() === FALSE){
+			$content = $this->pi_getLL('config_warning');
+		}else{
+			if ($displayMode === 'embedded') {
+				$url = $this->getRPXDomain().'openid/embed?token_url=' . $tokenUrl;
+				$content = ' <iframe src="' . $url . '"  scrolling="no"  frameBorder="no" allowtransparency="true"  style="width:400px;height:240px"></iframe> ';
+			} else {
+				$js = '';
+				$js .= 'var rpxJsHost = (("https:" == document.location.protocol) ? "https://" : "http://static.");'.PHP_EOL;
+				$js .= 'var rpxJsHost = document.write(unescape("%3Cscript src=\'" + rpxJsHost + "rpxnow.com/js/lib/rpx.js\' type=\'text/javascript\'%3E%3C/script%3E"));'.PHP_EOL;
+				$js .= 'RPXNOW.overlay = true;'.PHP_EOL;
+				$js .= 'RPXNOW.language_preference = '.$this->LLkey.';'.PHP_EOL;
+				$GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('tx_rpx',$js, FALSE);
+				$url = $this->getRPXDomain().'openid/v2/signin?token_url=' . $tokenUrl;
+				$content = '<br/><br/><br/><br/><br/><a class="rpxnow" onclick="return false;" href="' . $url . '"> '.$this->pi_getLL('sign_in_label').' </a>';
+			}
 		}
 		return $this->pi_wrapInBaseClass ( $content );
+	}
+	/**
+	 * @return boolean
+	 */
+	private function isConfigured(){
+		if(!isset($this->ext_conf['rpx_domain']) || '' == trim($this->ext_conf['rpx_domain'])){
+			return FALSE;
+		}else{
+			return TRUE;
+		}
 	}
 	/**
 	 * @return string

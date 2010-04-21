@@ -14,6 +14,9 @@
 			<label index="redirectPageId">Redirect Page</label>
 			<label index="fe_groups">User Groups on autocreate</label>
 			<label index="pid">Page where the users stored</label>
+			<label index="config_warning">Warning: Plugin is not configured. Use the extension Manager to configure it!</label>
+			
+			
 		</languageKey>
 	</data>
 </T3locallang>
