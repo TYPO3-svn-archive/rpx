@@ -138,7 +138,11 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 		$pid = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'pid');
 		
 		$redirectPageId = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'redirectPageId');
-		$redirectPage = $this->cObj->getTypoLink_URL($redirectPageId);
+		$conf = array();
+		$conf['parameter'] = $redirectPageId;
+		$conf['returnLast'] = 'url';
+		$conf['linkAccessRestrictedPages'] = TRUE;
+		$redirectPage = $this->cObj->typoLink('',$conf);
 		$encryption = t3lib_div::makeInstance('tx_rpx_Core_Encryption');
 		$url .= '&pid='.$pid;
 		$url .= '&fe_groups='.$fe_groups;
