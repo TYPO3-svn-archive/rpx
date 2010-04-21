@@ -4,6 +4,4 @@ api_key =
 rpx_domain =
 	# cat=basic//10; type=input; label=Imported fe_user prefix
 imported_fe_user_prefix = tx_rpx
-	# cat=basic//10; type=input; label= Encryption key
-encryption_key = 
 
