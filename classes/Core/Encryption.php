@@ -11,8 +11,9 @@ class tx_rpx_Core_Encryption {
 	 * @throws tx_rpx_Core_Exception
 	 */
 	public function validate(array $values,$verify){
+		$test =  $this->creatHash($values);
 		if($verify !== $this->creatHash($values)){
-			throw new tx_rpx_Core_Exception('invalid verify value'.$verify);
+			throw new tx_rpx_Core_Exception('invalid verify value: '.$verify.' expected: '.$test);
 		}
 	}
 	/**

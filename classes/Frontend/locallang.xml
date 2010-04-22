@@ -11,12 +11,12 @@
 			<label index="embedded">embedded</label>
 			<label index="modal">modal overlay</label>
 			<label index="sign_in_label">Sign In</label>
-			<label index="redirectPageId">Redirect Page</label>
-			<label index="fe_groups">User Groups on autocreate</label>
+			<label index="redirectPageId">Redirect page on successful login (optional)</label>
+			<label index="returnUrlPid">Url to prozesses the rpx response. This page have to be accessible on without user restrictions. This page need no content.</label>
+			<label index="errorPid">Redirect page on login error (optional)</label>
+			<label index="fe_groups">User Groups on autocreate (optional)</label>
 			<label index="pid">Page where the users stored</label>
 			<label index="config_warning">Warning: Plugin is not configured. Use the extension Manager to configure it!</label>
-			
-			
 		</languageKey>
 	</data>
 </T3locallang>

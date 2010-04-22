@@ -74,6 +74,10 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	 * @var string
 	 */
 	private $redirect_page;
+	/**
+	 * @var string
+	 */
+	private $error_page;
 	
 	/**
 	 * @return	boolean
@@ -122,18 +126,19 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 			if ($this->isRPXResponse ()) {
 				
 				try {
+					$this->parseRuntimeConfig ();
 					$responseXml = $this->getConnector ()->auth_info ( $_POST ['token'] );
 					$profile = $this->getFactory ()->createProfile ( $responseXml );
 					$user = $this->autoCreateUser ( $profile );
 					$user ['authenticated'] = TRUE;
 					return $user;
 				} catch ( tx_rpx_Core_Exception $e ) {
-					t3lib_div::devLog('rpx error', 'rpx',2);
+					t3lib_div::devLog('rpx error: '.$e->getMessage(), 'rpx',2);
+					$this->redirectError();
 					return FALSE;
 				}
 			}
 		}
-		
 		return FALSE;
 	}
 	/**
@@ -147,10 +152,11 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 			return 100;
 		}
 		if ($user ['authenticated'] === FALSE) {
+			$this->redirectError();
 			return - 1;
 		}
 		t3lib_div::devLog('rpx login successfull', 'rpx', -1);
-		//$this->redirect();
+		$this->redirect();
 		return 200;
 	
 	}
@@ -214,7 +220,6 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 		$username_column = $this->authInfo ['db_user'] ['username_column'];
 		$userident_column = $this->authInfo ['db_user'] ['userident_column'];
 		$usergroup_column = $this->authInfo ['db_user'] ['usergroup_column'];
-		$this->parseRuntimeConfig ();
 		try {
 			$user = $this->getUserStorage ()->getUser ( $profile, $table, $check_pid_clause, $enable_clause );
 			t3lib_div::devLog('existing user found', 'rpx');
@@ -233,12 +238,17 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 		if (FALSE === $_GET ['verify']) {
 			throw new tx_rpx_Core_Exception ( 'Invalid return url' );
 		}
-		$pid = $_GET ['pid'];
-		$this->fe_user_groups = $_GET ['fe_groups'];
-		$this->redirect_page = $_GET ['redirect'];
+		$params = array();
+		$params['pid'] = $_GET ['pid'];
+		$params['fe_groups'] = $_GET ['fe_groups'];
+		$params['redirect'] = $_GET ['redirect'];
+		$params['error'] = $_GET ['error'];
 		$verify = $_GET ['verify'];
+		$this->getEncryption ()->validate ($params,$verify );
 		
-		$this->getEncryption ()->validate ( array('pid'=>$pid,'fe_groups'=>$this->fe_user_groups,'redirect'=>$this->redirect_page),$verify );
+		$this->fe_user_groups = $params['fe_groups'];
+		$this->redirect_page = $params['redirect'];
+		$this->error_page = $params['error'];
 	}
 	/**
 	 * @return boolean
@@ -254,6 +264,16 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 			header ( 'HTTP/1.1 303 See Other' );
 			header ( 'Location: ' . t3lib_div::locationHeaderUrl ( $this->redirect_page ) );
 			t3lib_div::devLog('redirect to: '.$this->redirect_page, 'rpx');
+		}
+	}
+	/**
+	 * redirect to page if it requested
+	 */
+	public function redirectError() {
+		if (! empty ( $this->error_page )) {
+			header ( 'HTTP/1.1 303 See Other' );
+			header ( 'Location: ' . t3lib_div::locationHeaderUrl ( $this->error_page ) );
+			t3lib_div::devLog('redirect to: '.$this->error_page, 'rpx');
 		}
 	}
 }

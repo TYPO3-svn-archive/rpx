@@ -38,7 +38,7 @@ class tx_rpx_Core_UserStorage {
 	 */
 	public function getUser(tx_rpx_Core_Profile $profile,$table,$check_pid_clause = '',$enable_clause=''){
 		$where = 'tx_rpx_identifier=' . $this->getDb()->fullQuoteStr($profile->getIdentifier(), $table) ;
-		//$where .= $check_pid_clause .$enable_clause;
+		$where .= $check_pid_clause .$enable_clause;
 		$record =  $this->getDb()->exec_SELECTgetRows('*',$table,$where);
 		if(empty($record)){
 			throw new tx_rpx_Core_UserNotFoundException('user not found with ');

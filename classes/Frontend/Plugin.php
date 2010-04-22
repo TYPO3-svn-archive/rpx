@@ -109,33 +109,23 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 	 * @return string
 	 */
 	private function getTokenUrl() {
-		$url = $this->getCurrentUrl ();
+		$url = $this->getReturnUrl ();
 		$url = $this->addLoginParameters ( $url );
 		return urlencode ( $url );
 	}
-	private function getCurrentUrl() {
-		if (isset ( $_SERVER ['HTTPS'] ) && $_SERVER ['HTTPS'] == 'on') {
-			$proto = "https";
-			$standard_port = '443';
-		} else {
-			$proto = 'http';
-			$standard_port = '80';
-		}
-		$authority = $_SERVER ['HTTP_HOST'];
-		if (strpos ( $authority, ':' ) === FALSE && 
-		$_SERVER ['SERVER_PORT'] != $standard_port) {
-			$authority .= ':' . $_SERVER ['SERVER_PORT'];
-		}
-		if (isset ( $_SERVER ['REQUEST_URI'] )) {
-			$request_uri = $_SERVER ['REQUEST_URI'];
-		} else {
-			$request_uri = $_SERVER ['SCRIPT_NAME'] . $_SERVER ['PATH_INFO'];
-			$query = $_SERVER ['QUERY_STRING'];
-			if (isset ( $query )) {
-				$request_uri .= '?' . $query;
-			}
-		}
-		return $proto . '://' . $authority . $request_uri;
+	/**
+	 * @return string
+	 */
+	private function getReturnUrl() {
+		$conf = array();
+		$conf['parameter'] = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'returnUrlPid');
+		$conf['returnLast'] = 'url';
+		$conf['forceAbsoluteUrl'] = TRUE;
+		$conf['forceAbsoluteUrl.']['scheme'] = 'https';
+		$conf['additionalParams'] = array();
+		
+		$url = $this->cObj->typoLink('',$conf);
+		return $url;
 	}
 	/**
 	 * @param string $url
@@ -148,21 +138,29 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 			$url .= '&';
 		}
 		$url .= 'logintype=login';
-		$fe_groups = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'fe_groups');
-		$pid = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'pid');
+		$encryption = t3lib_div::makeInstance('tx_rpx_Core_Encryption');
+		$params = array();
+		$params['pid'] = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'pid');
+		$params['fe_groups'] = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'fe_groups');
+		$params['redirect'] = $this->getUrl($this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'redirectPageId'));
+		$params['error'] = $this->getUrl($this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'errorPid'));
+		$url .= '&verify='.$encryption->creatHash($params);
+		foreach($params as $key=>$value){
+			$url .= '&'.$key.'='.$value;
+		}
 		
-		$redirectPageId = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'redirectPageId');
+		return $url;
+	}
+	/**
+	 * @param string $pid
+	 * @return string
+	 */
+	private function getUrl($pid){
 		$conf = array();
-		$conf['parameter'] = $redirectPageId;
+		$conf['parameter'] = $pid;
 		$conf['returnLast'] = 'url';
 		$conf['linkAccessRestrictedPages'] = TRUE;
-		$redirectPage = $this->cObj->typoLink('',$conf);
-		$encryption = t3lib_div::makeInstance('tx_rpx_Core_Encryption');
-		$url .= '&pid='.$pid;
-		$url .= '&fe_groups='.$fe_groups;
-		$url .= '&redirect='.$redirectPage;
-		$url .= '&verify='.$encryption->creatHash(array('pid'=>$pid,'fe_groups'=>$fe_groups,'redirect'=>$redirectPage));
-		return $url;
+		return $this->cObj->typoLink('',$conf);
 	}
 }
 if (defined ( 'TYPO3_MODE' ) && $TYPO3_CONF_VARS [TYPO3_MODE] ['XCLASS'] ['ext/rpx/classes/Frontend/Plugin.php']) {
