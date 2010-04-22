@@ -138,6 +138,7 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 			$url .= '&';
 		}
 		$url .= 'logintype=login';
+		$url .= '&uident=rpx';
 		$encryption = t3lib_div::makeInstance('tx_rpx_Core_Encryption');
 		$params = array();
 		$params['pid'] = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'pid');
