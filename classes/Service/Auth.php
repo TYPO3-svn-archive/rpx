@@ -147,7 +147,7 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	 * @param	array		Data of user.
 	 * @return	integer 100|200|-1
 	 */
-	public function authUser(&$user) {
+	public function authUser($user) {
 		if (!$this->isRPXResponse ()) {
 			return 100;
 		}

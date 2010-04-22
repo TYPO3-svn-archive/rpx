@@ -69,8 +69,7 @@ class Service_Auth_testcase extends tx_phpunit_testcase {
 		$this->auth->initAuth ( 'getUser', array ('uname' => $prefix . 'test', 'status' => 'login' ), array () );
 		$user = $this->auth->getUser ();
 		$this->assertType ( 'array', $user );
-		$this->assertTrue ( isset ( $user ['invalid'] ) );
-		$this->assertTrue ( $user ['invalid'] );
+		$this->assertFalse ( $user ['authenticated']  );
 	}
 	/**
 	 * test the method getUser
@@ -78,7 +77,7 @@ class Service_Auth_testcase extends tx_phpunit_testcase {
 	 */
 	public function getUser() {
 		$_POST ['token'] = 'test';
-		$test = array ('test' );
+		$test = array ('authenticated'=>TRUE );
 		$this->auth->initAuth ( 'getUser', array ('uname' =>  'test', 'status' => 'login' ), array () );
 		$this->connector->expects ( $this->once () )->method ( 'auth_info' )->will ( $this->returnValue ( new DOMDocument () ) );
 		$this->factory->expects ( $this->once () )->method ( 'createProfile' )->will ( $this->returnValue ( new tx_rpx_Core_Profile () ) );
@@ -92,7 +91,7 @@ class Service_Auth_testcase extends tx_phpunit_testcase {
 	 */
 	public function getUserWithAutoCreate() {
 		$_POST ['token'] = 'test';
-		$test = array ('test' );
+		$test = array ('authenticated'=>TRUE );
 		$this->auth->initAuth ( 'getUser', array ('uname' =>  'test', 'status' => 'login' ), array () );
 		$this->connector->expects ( $this->once () )->method ( 'auth_info' )->will ( $this->returnValue ( new DOMDocument () ) );
 		$this->factory->expects ( $this->once () )->method ( 'createProfile' )->will ( $this->returnValue ( new tx_rpx_Core_Profile () ) );
@@ -107,8 +106,8 @@ class Service_Auth_testcase extends tx_phpunit_testcase {
 	 * @test
 	 */
 	public function authUser() {
-		$this->assertEquals ( - 1, $this->auth->authUser ( array ('invalid' => TRUE ) ) );
-		$this->assertEquals ( 200, $this->auth->authUser ( array ('test' => TRUE ) ) );
+		$this->assertEquals ( - 1, $this->auth->authUser ( array ('authenticated'=>FALSE ) ) );
+		$this->assertEquals ( 200, $this->auth->authUser ( array ('authenticated'=>TRUE ) ) );
 	}
 
 }
