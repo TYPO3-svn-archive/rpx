@@ -18,8 +18,8 @@ class tx_rpx_Core_UserStorage {
 	public function add(tx_rpx_Core_Profile $profile,$prefix,$table,$pid,$groups,$username_column,$userident_column,$usergroup_column){
 		$values = array();
 		$values['tx_rpx_identifier'] = $profile->getIdentifier();
-		$values[$username_column] = uniqid($prefix, TRUE);
-		$values[$userident_column] = uniqid($prefix,TRUE);
+		$values[$username_column] = uniqid($prefix);
+		$values[$userident_column] = uniqid($prefix);
 		$values['pid'] = $pid;
 		$values[$usergroup_column] = $groups;
 		$values['crdate'] = time();
