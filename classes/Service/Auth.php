@@ -2,7 +2,7 @@
 /***************************************************************
  * Copyright notice
  *
- * (c) 2010  <>
+ * (c) 2010 Axel Jung <axel.jung@aoemedia.de>
  * All rights reserved
  *
  * This script is part of the TYPO3 project. The TYPO3 project is
@@ -29,7 +29,7 @@ require_once t3lib_extMgm::extPath ( 'sv' ) . 'class.tx_sv_auth.php';
 /**
  * Service "RPX Auth Service" for the "rpx" extension.
  *
- * @author	 <>
+ * @author	Axel Jung <axel.jung@aoemedia.de>
  * @package	TYPO3
  * @subpackage	tx_rpx
  */
