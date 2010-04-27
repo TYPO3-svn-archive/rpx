@@ -21,7 +21,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'conflicts' => '',
 	'priority' => '',
 	'module' => '',
-	'state' => 'alpha',
+	'state' => 'beta',
 	'internal' => '',
 	'uploadfolder' => 0,
 	'createDirs' => '',
@@ -29,7 +29,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
 	'author_company' => 'AOE media GmbH',
-	'version' => '0.0.dev',
+	'version' => '0.1.dev',
 	'constraints' => array(
 		'depends' => array(
 			'fe_users'

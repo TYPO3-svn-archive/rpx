@@ -95,6 +95,7 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 			return FALSE;
 		}
 		
+		
 		return $available;
 	}
 	/**
@@ -114,7 +115,6 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	 */
 	
 	public function getUser() {
-		
 		if ($this->loginData ['status'] === 'login') {
 			if ($this->isImportedLoginName ()) {
 				$user = array ();
@@ -122,17 +122,16 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 				t3lib_div::devLog('invalid login detected: '.$this->username, 'rpx',2);
 				return $user;
 			}
-			
 			if ($this->isRPXResponse ()) {
-				
 				try {
 					$this->parseRuntimeConfig ();
+					$this->checkDomain();
 					$responseXml = $this->getConnector ()->auth_info ( $_POST ['token'] );
 					$profile = $this->getFactory ()->createProfile ( $responseXml );
 					$user = $this->autoCreateUser ( $profile );
 					$user ['authenticated'] = TRUE;
 					return $user;
-				} catch ( tx_rpx_Core_Exception $e ) {
+				} catch (Exception $e ) {
 					t3lib_div::devLog('rpx error: '.$e->getMessage(), 'rpx',2);
 					$this->redirectError();
 					return FALSE;
@@ -230,6 +229,33 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 			t3lib_div::devLog('new user created', 'rpx');
 		}
 		return $user;
+	}
+	/**
+	 * check the domain agains the allowed domains
+	 * @throws tx_rpx_Core_Exception
+	 */
+	private function checkDomain(){
+		if(isset($this->conf['allowed_domains']) && !empty($this->conf['allowed_domains'])){
+			$domains = explode(';',$this->conf['allowed_domains']);
+			$host = $this->authInfo['HTTP_HOST'];
+			foreach($domains as $domain){
+				$domain = trim($domain);
+				if(empty($domain)){
+					continue;
+				}
+				if(FALSE !== strpos($domain,'*')){
+					$search= substr($domain,strpos($domain,'*'));
+					if(FALSE !== strpos($domain,$search)){
+						return;
+					}
+				}else{
+					if(FALSE !== strpos($host,$domain)){
+						return;
+					}
+				}
+			}
+			throw new tx_rpx_Core_Exception('invalid domain: '.$host);
+		}
 	}
 	/**
 	 * @return string
