@@ -32,7 +32,6 @@ $EM_CONF[$_EXTKEY] = array(
 	'version' => '0.2.0',
 	'constraints' => array(
 		'depends' => array(
-			'0' => 'fe_users',
 		),
 		'conflicts' => array(
 		),
