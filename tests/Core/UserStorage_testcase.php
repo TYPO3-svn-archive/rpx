@@ -28,7 +28,10 @@ require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPAR
  * tx_rpx_Core_UserStorage test case.
  */
 class Core_UserStorage_testcase extends tx_phpunit_database_testcase {
-	
+	/**
+	 * @var boolean
+	 */
+	protected $backupGlobals = true;
 	/**
 	 * @var tx_rpx_Core_UserStorage
 	 */
@@ -60,7 +63,7 @@ class Core_UserStorage_testcase extends tx_phpunit_database_testcase {
 	public function add() {
 		$profile = new tx_rpx_Core_Profile ();
 		$profile->setIdentifier ( uniqid ( 'identitier' ) );
-		$this->userStorage->add ( $profile, 'testprefix', 'fe_users', 2, '1,2','username' ,'password','usergroup');
+		$this->userStorage->add ( $profile, 'testprefix', 'fe_users', 2, '1,2', 'username', 'password', 'usergroup' );
 	
 	}
 	/**
@@ -78,15 +81,32 @@ class Core_UserStorage_testcase extends tx_phpunit_database_testcase {
 	 * @test
 	 */
 	public function getUser() {
+		$conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['rpx'] );
+		$conf ['import_fields'] = 'displayName:name;verifiedEmail:email;photo:image;url:www;country:country;locality:city;postalCode:zip;addressFormatted:address';
+		$GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['rpx'] = serialize($conf);
 		$profile = new tx_rpx_Core_Profile ();
-		$profile->setIdentifier ( uniqid ( 'identitier' ) );
-		$profile->setVerifiedEmail ( uniqid ( 'email' ) );
-		$this->userStorage->add ( $profile, 'testprefix', 'fe_users', 2, '1,2','username' ,'password','usergroup' );
+		$profile->setIdentifier ( uniqid ('setIdentifier') );
+		$profile->setVerifiedEmail ( uniqid ('setVerifiedEmail') );
+		$profile->setDisplayName ( uniqid ('setDisplayName') );
+		$profile->setPhoto ( uniqid ('setPhoto') );
+		$profile->setUrl ( uniqid ('setUrl') );
+		$profile->setCountry ( uniqid ('setCountry') );
+		$profile->setLocality ( uniqid ('setLocality') );
+		$profile->setPostalCode ( '65195' );
+		$profile->setAddressFormatted ( uniqid ('setAddressFormatted') );
+		$this->userStorage->add ( $profile, 'testprefix', 'fe_users', 2, '1,2', 'username', 'password', 'usergroup' );
 		$record = $this->userStorage->getUser ( $profile, 'fe_users' );
-		$this->assertEquals($profile->getIdentifier(),$record['tx_rpx_identifier']);
-		$this->assertContains('testprefix',$record['username']);
-		$this->assertContains('testprefix',$record['password']);
-		$this->assertContains($profile->getVerifiedEmail(),$record['email']);
+		$this->assertEquals ( $profile->getIdentifier (), $record ['tx_rpx_identifier'] );
+		$this->assertContains ( 'testprefix', $record ['username'] );
+		$this->assertContains ( 'testprefix', $record ['password'] );
+		$this->assertEquals ( $profile->getVerifiedEmail (), $record ['email'] );
+		$this->assertEquals ( $profile->getDisplayName (), $record ['name'] );
+		//$this->assertEquals ( $profile->getPhoto (), $record ['image'] );
+		$this->assertEquals ( $profile->getUrl (), $record ['www'] );
+		$this->assertEquals ( $profile->getCountry (), $record ['country'] );
+		$this->assertEquals ( $profile->getLocality (), $record ['city'] );
+		$this->assertEquals ( $profile->getPostalCode (), $record ['zip'] );
+		$this->assertEquals ( $profile->getAddressFormatted (), $record ['address'] );
 	}
 }
 

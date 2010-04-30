@@ -6,4 +6,5 @@ rpx_domain =
 imported_fe_user_prefix = tx_rpx
 	# cat=basic//10; type=input; label=Allowed Domains: (with semicolon seperated, Example: example.com  or *.example.com)
 allowed_domains = 
-
+	# cat=basic//10; type=input; label=Import Fields: Example: displayName:name;verifiedEmail:email
+import_fields = displayName:name;verifiedEmail:email

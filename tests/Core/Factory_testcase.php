@@ -39,7 +39,7 @@ class Core_Factory_testcase extends tx_phpunit_testcase {
 	 */
 	protected function setUp() {
 		parent::setUp ();
-		$this->factory = new tx_rpx_Core_Factory(/* parameters */);
+		$this->factory = new tx_rpx_Core_Factory();
 	}
 	
 	/**
@@ -62,12 +62,20 @@ class Core_Factory_testcase extends tx_phpunit_testcase {
 		$this->assertEquals('https://www.google.com/accounts/o8/id?id=AIsss',$profile->getIdentifier());
 		$this->assertEquals('Max',$profile->getGivenName());
 		$this->assertEquals('Mustermann',$profile->getFamilyName());
-		$this->assertEquals('Max Mustermann',$profile->getFormatted());
+		$this->assertEquals('Max Mustermann',$profile->getFormattedName());
 		$this->assertEquals('max.muster',$profile->getPreferredUsername());
 		$this->assertEquals('Google',$profile->getProviderName());
 		$this->assertEquals('max.muster@googlemail.com',$profile->getVerifiedEmail());
 		$this->assertEquals('max.muster',$profile->getPreferredUsername());
+		$this->assertEquals('1976-06-26',$profile->getBirthday());
+		$this->assertEquals('-08:00',$profile->getUtcOffset());
+		$this->assertEquals('https://www.google.com/',$profile->getUrl());
+		$this->assertEquals('01777777777',$profile->getPhoneNumber());
+		$this->assertEquals('http://www.example.com/',$profile->getPhoto());
+		$this->assertEquals('Borsigstr. 3,65185 Wiesbaden, Germany',$profile->getAddressFormatted());
+		$this->assertEquals('Borsigstr. 3',$profile->getStreetAddress());
+		$this->assertEquals('Germany',$profile->getCountry());
+		$this->assertEquals('Hessen',$profile->getRegion());
+		$this->assertEquals('Wiesbaden',$profile->getLocality());
 	}
-
 }
-

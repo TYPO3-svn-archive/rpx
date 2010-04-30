@@ -39,42 +39,59 @@ class tx_rpx_Core_UserStorage {
 	 * @param string $userident_column
 	 * @param string $usergroup_column
 	 */
-	public function add(tx_rpx_Core_Profile $profile,$prefix,$table,$pid,$groups,$username_column,$userident_column,$usergroup_column){
-		$values = array();
-		$values['tx_rpx_identifier'] = $profile->getIdentifier();
-		$values[$username_column] = uniqid($prefix);
-		$values[$userident_column] = uniqid($prefix);
-		$values['pid'] = $pid;
-		$values[$usergroup_column] = $groups;
-		$values['crdate'] = time();
-		if(null !== $profile->getVerifiedEmail()){
-			$values['email'] = $profile->getVerifiedEmail();
-		}
-		if(FALSE === $this->getDb()->exec_INSERTquery($table,$values)){
-			throw new tx_rpx_Core_DatabaseException('insert not successfull'.mysql_error());
+	public function add(tx_rpx_Core_Profile $profile, $prefix, $table, $pid, $groups, $username_column, $userident_column, $usergroup_column) {
+		$values = array ();
+		$values ['tx_rpx_identifier'] = $profile->getIdentifier ();
+		$values [$username_column] = uniqid ( $prefix );
+		$values [$userident_column] = uniqid ( $prefix );
+		$values ['pid'] = $pid;
+		$values [$usergroup_column] = $groups;
+		$values ['crdate'] = time ();
+		$values = $this->importFields ( $profile, $values );
+		if (FALSE === $this->getDb ()->exec_INSERTquery ( $table, $values )) {
+			throw new tx_rpx_Core_DatabaseException ( 'insert not successfull' . mysql_error () );
 		}
 	}
+	
 	/**
 	 * @param tx_rpx_Core_Profile $profile
 	 * @param string $table
 	 * @return array
 	 * @throws tx_rpx_Core_UserNotFoundException
 	 */
-	public function getUser(tx_rpx_Core_Profile $profile,$table,$check_pid_clause = '',$enable_clause=''){
-		$where = 'tx_rpx_identifier=' . $this->getDb()->fullQuoteStr($profile->getIdentifier(), $table) ;
-		$where .= $check_pid_clause .$enable_clause;
-		$record =  $this->getDb()->exec_SELECTgetRows('*',$table,$where);
-		if(empty($record)){
-			throw new tx_rpx_Core_UserNotFoundException('user not found with ');
+	public function getUser(tx_rpx_Core_Profile $profile, $table, $check_pid_clause = '', $enable_clause = '') {
+		$where = 'tx_rpx_identifier=' . $this->getDb ()->fullQuoteStr ( $profile->getIdentifier (), $table );
+		$where .= $check_pid_clause . $enable_clause;
+		$record = $this->getDb ()->exec_SELECTgetRows ( '*', $table, $where );
+		if (empty ( $record )) {
+			throw new tx_rpx_Core_UserNotFoundException ( 'user not found with ' );
 		}
-		return $record[0];
+		return $record [0];
 	}
 	/**
 	 * @return t3lib_DB
 	 */
-	protected function getDb(){
-		return $GLOBALS['TYPO3_DB'];
-	} 
+	protected function getDb() {
+		return $GLOBALS ['TYPO3_DB'];
+	}
+	/**
+	 * @param tx_rpx_Core_Profile $profile
+	 * @param array $values
+	 * @return array
+	 */
+	protected function importFields(tx_rpx_Core_Profile $profile, array $values) {
+		$conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['rpx'] );
+		if (! empty ( $conf ['import_fields'] )) {
+			foreach ( explode ( ';', $conf ['import_fields'] ) as $fields ) {
+				list ( $rpxField, $userField ) = explode ( ':', $fields );
+				$method = 'get' . ucfirst ( $rpxField );
+				if (method_exists ( $profile, $method )) {
+					$values [$userField] = call_user_method ( $method, $profile );
+				}
+			}
+		}
+		return $values;
+	}
 }
 if (defined ( 'TYPO3_MODE' ) && $TYPO3_CONF_VARS [TYPO3_MODE] ['XCLASS'] ['ext/rpx/classes/Core/UserStorage.php']) {
 	include_once ($TYPO3_CONF_VARS [TYPO3_MODE] ['XCLASS'] ['ext/rpx/classes/Core/UserStorage.php']);

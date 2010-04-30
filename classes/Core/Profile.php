@@ -49,7 +49,7 @@ class tx_rpx_Core_Profile {
 	/**
 	 * @var string
 	 */
-	private $formatted;
+	private $formattedName;
 	/**
 	 * @var string
 	 */
@@ -62,6 +62,216 @@ class tx_rpx_Core_Profile {
 	 * @var string
 	 */
 	private $verifiedEmail;
+	/**
+	 * @var string
+	 */
+	private $utcOffset;
+	/**
+	 * @var string
+	 */
+	private $photo;
+	/**
+	 * @var string
+	 */
+	private $gender;
+	/**
+	 * @var string
+	 */
+	private $birthday;
+	/**
+	 * @var string
+	 */
+	private $url;
+	/**
+	 * @var string
+	 */
+	private $phoneNumber;
+	/**
+	 * @var string
+	 */
+	private $addressFormatted;
+	/**
+	 * @var string
+	 */
+	private $streetAddress;
+	/**
+	 * @var string
+	 */
+	private $locality;
+	/**
+	 * @var string
+	 */
+	private $region;
+	/**
+	 * @var string
+	 */
+	private $postalCode;
+	/**
+	 * @var string
+	 */
+	private $country;
+	/**
+	 * @return string
+	 */
+	public function getLocality() {
+		return $this->locality;
+	}
+	/**
+	 * @param string $locality
+	 */
+	public function setLocality($locality) {
+		$this->locality = $locality;
+	}
+
+	public function getUtcOffset() {
+		return $this->utcOffset;
+	}
+	/**
+	 * @return string
+	 */
+	public function getPhoto() {
+		return $this->photo;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getGender() {
+		return $this->gender;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBirthday() {
+		return $this->birthday;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUrl() {
+		return $this->url;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPhoneNumber() {
+		return $this->phoneNumber;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAddressFormatted() {
+		return $this->addressFormatted;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getStreetAddress() {
+		return $this->streetAddress;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getRegion() {
+		return $this->region;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPostalCode() {
+		return $this->postalCode;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCountry() {
+		return $this->country;
+	}
+
+	/**
+	 * @param string $utcOffset
+	 */
+	public function setUtcOffset($utcOffset) {
+		$this->utcOffset = $utcOffset;
+	}
+
+	/**
+	 * @param string $photo
+	 */
+	public function setPhoto($photo) {
+		$this->photo = $photo;
+	}
+
+	/**
+	 * @param string $gender
+	 */
+	public function setGender($gender) {
+		$this->gender = $gender;
+	}
+
+	/**
+	 * @param string $birthday
+	 */
+	public function setBirthday($birthday) {
+		$this->birthday = $birthday;
+	}
+
+	/**
+	 * @param string $url 
+	 */
+	public function setUrl($url) {
+		$this->url = $url;
+	}
+
+	/**
+	 * @param string $phoneNumber
+	 */
+	public function setPhoneNumber($phoneNumber) {
+		$this->phoneNumber = $phoneNumber;
+	}
+
+	/**
+	 * @param string $addressFormatted
+	 */
+	public function setAddressFormatted($addressFormatted) {
+		$this->addressFormatted = $addressFormatted;
+	}
+
+	/**
+	 * @param string $streetAddress
+	 */
+	public function setStreetAddress($streetAddress) {
+		$this->streetAddress = $streetAddress;
+	}
+
+	/**
+	 * @param string $region
+	 */
+	public function setRegion($region) {
+		$this->region = $region;
+	}
+
+	/**
+	 * @param string $postalCode
+	 */
+	public function setPostalCode($postalCode) {
+		$this->postalCode = $postalCode;
+	}
+
+	/**
+	 * @param string $country
+	 */
+	public function setCountry($country) {
+		$this->country = $country;
+	}
 	/**
 	 * @return string
 	 */
@@ -100,8 +310,8 @@ class tx_rpx_Core_Profile {
 	/**
 	 * @return string
 	 */
-	public function getFormatted() {
-		return $this->formatted;
+	public function getFormattedName() {
+		return $this->formattedName;
 	}
 	
 	/**
@@ -161,10 +371,10 @@ class tx_rpx_Core_Profile {
 	}
 	
 	/**
-	 * @param string $formatted
+	 * @param string $formattedName
 	 */
-	public function setFormatted($formatted) {
-		$this->formatted = $formatted;
+	public function setFormattedName($formattedName) {
+		$this->formattedName = $formattedName;
 	}
 	
 	/**

@@ -33,37 +33,78 @@ class tx_rpx_Core_Factory {
 	 * @return tx_rpx_Core_Profile
 	 */
 	public function createProfile(DOMDocument $DOMDocument) {
-		$profile = t3lib_div::makeInstance('tx_rpx_Core_Profile');
+		/* @var $profile tx_rpx_Core_Profile */
+		$profile = t3lib_div::makeInstance ( 'tx_rpx_Core_Profile' );
 		$simpleXMLElement = simplexml_import_dom ( $DOMDocument );
 		if (isset ( $simpleXMLElement->profile )) {
 			if (isset ( $simpleXMLElement->profile->displayName )) {
-				$profile->setDisplayName ( (string) $simpleXMLElement->profile->displayName );
+				$profile->setDisplayName ( ( string ) $simpleXMLElement->profile->displayName );
 			}
 			if (isset ( $simpleXMLElement->profile->email )) {
-				$profile->setEmail ( (string) $simpleXMLElement->profile->email );
+				$profile->setEmail ( ( string ) $simpleXMLElement->profile->email );
 			}
 			if (isset ( $simpleXMLElement->profile->identifier )) {
-				$profile->setIdentifier ( (string) $simpleXMLElement->profile->identifier );
+				$profile->setIdentifier ( ( string ) $simpleXMLElement->profile->identifier );
 			}
 			if (isset ( $simpleXMLElement->profile->name )) {
 				if (isset ( $simpleXMLElement->profile->name->givenName )) {
-					$profile->setGivenName ( (string) $simpleXMLElement->profile->name->givenName );
+					$profile->setGivenName ( ( string ) $simpleXMLElement->profile->name->givenName );
 				}
 				if (isset ( $simpleXMLElement->profile->name->familyName )) {
-					$profile->setFamilyName ( (string) $simpleXMLElement->profile->name->familyName );
+					$profile->setFamilyName ( ( string ) $simpleXMLElement->profile->name->familyName );
 				}
 				if (isset ( $simpleXMLElement->profile->name->formatted )) {
-					$profile->setFormatted ( (string) $simpleXMLElement->profile->name->formatted );
+					$profile->setFormattedName ( ( string ) $simpleXMLElement->profile->name->formatted );
 				}
 			}
 			if (isset ( $simpleXMLElement->profile->preferredUsername )) {
-				$profile->setPreferredUsername ( (string) $simpleXMLElement->profile->preferredUsername );
+				$profile->setPreferredUsername ( ( string ) $simpleXMLElement->profile->preferredUsername );
 			}
 			if (isset ( $simpleXMLElement->profile->providerName )) {
-				$profile->setProviderName ( (string) $simpleXMLElement->profile->providerName );
+				$profile->setProviderName ( ( string ) $simpleXMLElement->profile->providerName );
 			}
 			if (isset ( $simpleXMLElement->profile->verifiedEmail )) {
-				$profile->setVerifiedEmail ( (string) $simpleXMLElement->profile->verifiedEmail );
+				$profile->setVerifiedEmail ( ( string ) $simpleXMLElement->profile->verifiedEmail );
+			}
+			if (isset ( $simpleXMLElement->profile->birthday )) {
+				$profile->setBirthday ( ( string ) $simpleXMLElement->profile->birthday );
+			}
+			if (isset ( $simpleXMLElement->profile->utcOffset )) {
+				$profile->setUtcOffset ( ( string ) $simpleXMLElement->profile->utcOffset );
+			}
+			if (isset ( $simpleXMLElement->profile->url )) {
+				$profile->setUrl ( ( string ) $simpleXMLElement->profile->url );
+			}
+			if (isset ( $simpleXMLElement->profile->phoneNumber )) {
+				$profile->setPhoneNumber ( ( string ) $simpleXMLElement->profile->phoneNumber );
+			}
+			if (isset ( $simpleXMLElement->profile->photo )) {
+				$profile->setPhoto ( ( string ) $simpleXMLElement->profile->photo );
+			}
+			if (isset ( $simpleXMLElement->profile->photo )) {
+				$profile->setPhoto ( ( string ) $simpleXMLElement->profile->photo );
+			}
+			if (isset ( $simpleXMLElement->profile->address )) {
+				
+				if (isset ( $simpleXMLElement->profile->address->formatted )) {
+					
+					$profile->setAddressFormatted ( ( string ) $simpleXMLElement->profile->address->formatted );
+				}
+				if (isset ( $simpleXMLElement->profile->address->streetAddress )) {
+					$profile->setStreetAddress ( ( string ) $simpleXMLElement->profile->address->streetAddress );
+				}
+				if (isset ( $simpleXMLElement->profile->address->locality )) {
+					$profile->setLocality ( ( string ) $simpleXMLElement->profile->address->locality );
+				}
+				if (isset ( $simpleXMLElement->profile->address->region )) {
+					$profile->setRegion ( ( string ) $simpleXMLElement->profile->address->region );
+				}
+				if (isset ( $simpleXMLElement->profile->address->postalCode )) {
+					$profile->setPostalCode ( ( string ) $simpleXMLElement->profile->address->postalCode );
+				}
+				if (isset ( $simpleXMLElement->profile->address->country )) {
+					$profile->setCountry ( ( string ) $simpleXMLElement->profile->address->country );
+				}
 			}
 		}
 		return $profile;

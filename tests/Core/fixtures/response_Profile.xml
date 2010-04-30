@@ -13,5 +13,18 @@
 		<providerName>Google</providerName>
 		<verifiedEmail>max.muster@googlemail.com</verifiedEmail>
 		<googleUserId>123456</googleUserId>
+		<utcOffset>-08:00</utcOffset>
+		<url>https://www.google.com/</url>
+		<phoneNumber>01777777777</phoneNumber>
+		<photo>http://www.example.com/</photo>
+		<birthday>1976-06-26</birthday>
+		<address>
+			<formatted>Borsigstr. 3,65185 Wiesbaden, Germany</formatted>
+			<streetAddress>Borsigstr. 3</streetAddress>
+			<locality>Wiesbaden</locality>
+			<region>Hessen</region>
+			<postalCode>65185</postalCode>
+			<country>Germany</country>
+		</address>
 	</profile>
 </rsp>
