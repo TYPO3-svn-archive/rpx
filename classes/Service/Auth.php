@@ -235,7 +235,7 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	 * @throws tx_rpx_Core_Exception
 	 */
 	private function checkDomain(){
-		if(isset($this->conf['allowed_domains']) && !empty($this->conf['allowed_domains'])){
+		if(isset($this->conf['allowed_domains']) && !empty($this->conf['allowed_domains']) && null !== $this->authInfo['HTTP_HOST']){
 			$domains = explode(';',$this->conf['allowed_domains']);
 			$host = $this->authInfo['HTTP_HOST'];
 			foreach($domains as $domain){
