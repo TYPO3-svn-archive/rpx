@@ -30,9 +30,9 @@ require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATO
 /**
  * Plugin 'RPX Login Box' for the 'rpx' extension.
  *
- * @author	Axel Jung <axel.jung@aoemedia.de>
  * @package	TYPO3
  * @subpackage	tx_rpx
+ * @author	Axel Jung <axel.jung@aoemedia.de>
  */
 class tx_rpx_Frontend_Plugin extends tslib_pibase {
 	/**
@@ -58,8 +58,8 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 	/**
 	 * The main method of the PlugIn
 	 *
-	 * @param	string		$content: The PlugIn content
-	 * @param	array		$conf: The PlugIn configuration
+	 * @param	string		$content The PlugIn content
+	 * @param	array		$conf The PlugIn configuration
 	 * @return	The content that is displayed on the website
 	 */
 	public function main($content, $conf) {

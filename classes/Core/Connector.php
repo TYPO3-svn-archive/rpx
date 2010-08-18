@@ -26,7 +26,9 @@ require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . 'Exception.php';
 
 /**
  * Service to call the Connector
- *
+ * 
+ * @package	TYPO3
+ * @subpackage	tx_rpx
  */
 class tx_rpx_Core_Connector {
 	/**

@@ -27,6 +27,9 @@ require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . 'DatabaseException.php
 
 /**
  * Import the Profile in FE User Table
+ * 
+ * @package	TYPO3
+ * @subpackage	tx_rpx
  */
 class tx_rpx_Core_UserStorage {
 	/**

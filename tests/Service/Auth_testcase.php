@@ -31,6 +31,9 @@ require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPAR
 
 /**
  * tx_rpx_Service_Auth test case.
+ * 
+ * @package	TYPO3
+ * @subpackage	tx_rpx
  */
 class Service_Auth_testcase extends tx_phpunit_testcase {
 	

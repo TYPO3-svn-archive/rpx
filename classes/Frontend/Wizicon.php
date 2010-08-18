@@ -31,7 +31,6 @@
 /**
  * Class that adds the wizard icon.
  *
- * @author	 <>
  * @package	TYPO3
  * @subpackage	tx_rpx
  */
@@ -40,7 +39,7 @@ class tx_rpx_Frontend_Wizicon {
 	/**
 	 * Processing the wizard items array
 	 *
-	 * @param	array		$wizardItems: The wizard items
+	 * @param	array $wizardItems The wizard items
 	 * @return	Modified array with wizard items
 	 */
 	public function proc($wizardItems) {

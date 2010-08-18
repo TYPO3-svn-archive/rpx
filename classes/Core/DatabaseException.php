@@ -24,6 +24,9 @@
 
 /**
  * Exception from Database
+ * 
+ * @package	TYPO3
+ * @subpackage	tx_rpx
  */
 class tx_rpx_Core_DatabaseException extends Exception {
 

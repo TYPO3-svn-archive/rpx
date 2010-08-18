@@ -24,6 +24,9 @@
 
 /**
  * Rpx Profile of a user
+ * 
+ * @package	TYPO3
+ * @subpackage	tx_rpx
  */
 class tx_rpx_Core_Profile {
 	/**
@@ -122,7 +125,9 @@ class tx_rpx_Core_Profile {
 	public function setLocality($locality) {
 		$this->locality = $locality;
 	}
-
+	/**
+	 * @return string
+	 */
 	public function getUtcOffset() {
 		return $this->utcOffset;
 	}

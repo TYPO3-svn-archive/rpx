@@ -28,10 +28,10 @@
 require_once t3lib_extMgm::extPath ( 'sv' ) . 'class.tx_sv_auth.php';
 /**
  * Service "RPX Auth Service" for the "rpx" extension.
- *
- * @author	Axel Jung <axel.jung@aoemedia.de>
+ * 
  * @package	TYPO3
  * @subpackage	tx_rpx
+ * @author	Axel Jung <axel.jung@aoemedia.de>
  */
 class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	/**
@@ -143,7 +143,7 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	/**
 	 * Authenticate a user
 	 *
-	 * @param	array		Data of user.
+	 * @param	array $user		Data of user.
 	 * @return	integer 100|200|-1
 	 */
 	public function authUser($user) {

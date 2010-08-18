@@ -23,6 +23,9 @@
  ***************************************************************/
 /**
  * Exception from RPX Service
+ * 
+ * @package	TYPO3
+ * @subpackage	tx_rpx
  */
 class tx_rpx_Core_Exception extends Exception {
 

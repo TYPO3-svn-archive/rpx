@@ -26,6 +26,9 @@ require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . 'Profile.php';
 
 /**
  * create rpx entities
+ * 
+ * @package	TYPO3
+ * @subpackage	tx_rpx
  */
 class tx_rpx_Core_Factory {
 	/**

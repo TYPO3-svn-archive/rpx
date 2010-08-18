@@ -26,6 +26,9 @@ require_once  dirname ( __FILE__ ) .DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR
 
 /**
  * tx_rpx_Core_Factory test case.
+ * 
+ * @package	TYPO3
+ * @subpackage	tx_rpx
  */
 class Core_Factory_testcase extends tx_phpunit_testcase {
 	
