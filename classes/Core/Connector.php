@@ -204,7 +204,7 @@ class tx_rpx_Core_Connector {
 	private function _parse($raw) {
 		$doc = new DOMDocument ();
 		if (! $doc->loadXML ( $raw )) {
-			throw new tx_rpx_Core_Exception ( "Error parsing XML response" );
+			throw new tx_rpx_Core_Exception ( "Error parsing XML response: ".$raw );
 		}
 		return $doc;
 	}
