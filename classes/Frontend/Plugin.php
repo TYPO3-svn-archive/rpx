@@ -55,6 +55,7 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 	 * @var array
 	 */
 	private $ext_conf;
+
 	/**
 	 * The main method of the PlugIn
 	 *
@@ -89,45 +90,7 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 		}
 		return $this->pi_wrapInBaseClass ( $content );
 	}
-	/**
-	 * @return boolean
-	 */
-	private function isConfigured(){
-		if(!isset($this->ext_conf['rpx_domain']) || '' == trim($this->ext_conf['rpx_domain'])){
-			return FALSE;
-		}else{
-			return TRUE;
-		}
-	}
-	/**
-	 * @return string
-	 */
-	private function getRPXDomain(){
-		return $this->ext_conf['rpx_domain'];
-	}
 
-	/**
-	 * @return string
-	 */
-	private function getTokenUrl() {
-		$url = $this->getReturnUrl ();
-		$url = $this->addLoginParameters ( $url );
-		return urlencode ( $url );
-	}
-	/**
-	 * @return string
-	 */
-	private function getReturnUrl() {
-		$conf = array();
-		$conf['parameter'] = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'returnUrlPid');
-		$conf['returnLast'] = 'url';
-		$conf['forceAbsoluteUrl'] = TRUE;
-		$conf['forceAbsoluteUrl.']['scheme'] = 'https';
-		$conf['additionalParams'] = array();
-		
-		$url = $this->cObj->typoLink('',$conf);
-		return $url;
-	}
 	/**
 	 * @param string $url
 	 * @return string
@@ -146,7 +109,9 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 		$params = array();
 		$params['pid'] = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'pid');
 		$params['fe_groups'] = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'fe_groups');
-		$params['redirect'] = $this->getUrl($this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'redirectPageId'));
+		if(NULL !== $redirectUrl = $this->getRedirectUrl()) {
+			$params['redirect'] = $redirectUrl;
+		}
 		$params['error'] = $this->getUrl($this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'errorPid'));
 		$url .= '&verify='.$encryption->creatHash($params);
 		foreach($params as $key=>$value){
@@ -154,6 +119,49 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 		}
 		
 		return $url;
+	}
+
+	/**
+	 * @return string
+	 */
+	private function getRedirectUrl() {
+		$url = NULL;
+		$staticRedirectPageId  = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'redirectPageId');
+		$dynamicRedirectPageId = t3lib_div::_GP( $this->ext_conf['redirect_parameter'] );
+		if($dynamicRedirectPageId !== NULL && (integer) $dynamicRedirectPageId > 0) {
+			$url = $this->getUrl( $dynamicRedirectPageId );
+		} elseif($staticRedirectPageId !== NULL && (integer) $staticRedirectPageId > 0) {
+			$url = $this->getUrl($staticRedirectPageId);
+		}
+		return $url;
+	}
+	/**
+	 * @return string
+	 */
+	private function getReturnUrl() {
+		$conf = array();
+		$conf['parameter'] = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'returnUrlPid');
+		$conf['returnLast'] = 'url';
+		$conf['forceAbsoluteUrl'] = TRUE;
+		$conf['forceAbsoluteUrl.']['scheme'] = 'https';
+		$conf['additionalParams'] = array();
+		
+		$url = $this->cObj->typoLink('',$conf);
+		return $url;
+	}
+	/**
+	 * @return string
+	 */
+	private function getRPXDomain(){
+		return $this->ext_conf['rpx_domain'];
+	}
+	/**
+	 * @return string
+	 */
+	private function getTokenUrl() {
+		$url = $this->getReturnUrl ();
+		$url = $this->addLoginParameters ( $url );
+		return urlencode ( $url );
 	}
 	/**
 	 * @param string $pid
@@ -165,6 +173,17 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 		$conf['returnLast'] = 'url';
 		$conf['linkAccessRestrictedPages'] = TRUE;
 		return $this->cObj->typoLink('',$conf);
+	}
+
+	/**
+	 * @return boolean
+	 */
+	private function isConfigured(){
+		if(!isset($this->ext_conf['rpx_domain']) || '' == trim($this->ext_conf['rpx_domain'])){
+			return FALSE;
+		}else{
+			return TRUE;
+		}
 	}
 }
 if (defined ( 'TYPO3_MODE' ) && $TYPO3_CONF_VARS [TYPO3_MODE] ['XCLASS'] ['ext/rpx/classes/Frontend/Plugin.php']) {

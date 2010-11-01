@@ -8,3 +8,5 @@ imported_fe_user_prefix = tx_rpx
 allowed_domains = 
 	# cat=basic//10; type=input; label=Import Fields: Example: displayName:name;verifiedEmail:email
 import_fields = displayName:name;verifiedEmail:email
+	# cat=basic//10; type=input; label=Redirect-Parameter: Define parameter which should be used for dynamic redirects
+redirect_parameter = r
