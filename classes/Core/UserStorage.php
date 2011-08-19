@@ -89,7 +89,7 @@ class tx_rpx_Core_UserStorage {
 				list ( $rpxField, $userField ) = explode ( ':', $fields );
 				$method = 'get' . ucfirst ( $rpxField );
 				if (method_exists ( $profile, $method )) {
-					$values [$userField] = call_user_method ( $method, $profile );
+					$values [$userField] = call_user_func (array(  $profile, $method) );
 				}
 			}
 		}

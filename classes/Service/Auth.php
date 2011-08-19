@@ -132,7 +132,7 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 					$user ['authenticated'] = TRUE;
 					return $user;
 				} catch (Exception $e ) {
-					t3lib_div::devLog('rpx error: '.$e->getMessage(), 'rpx',2);
+					t3lib_div::devLog('rpx Fatal error: '.$e->getMessage(), 'rpx',2);
 					$this->redirectError();
 					return FALSE;
 				}
@@ -223,9 +223,15 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 			$user = $this->getUserStorage ()->getUser ( $profile, $table, $check_pid_clause, $enable_clause );
 			t3lib_div::devLog('existing user found', 'rpx');
 		} catch ( tx_rpx_Core_UserNotFoundException $e ) {
-			t3lib_div::devLog('user not found', 'rpx');
-			$this->getUserStorage ()->add ( $profile, $prefix, $table, $checkPidList, $this->fe_user_groups,$username_column ,$userident_column,$usergroup_column);
-			$user = $this->getUserStorage ()->getUser ( $profile, $table, $check_pid_clause, $enable_clause );
+			t3lib_div::devLog('user not found - try to add one', 'rpx');
+			try {
+				$this->getUserStorage ()->add ( $profile, $prefix, $table, $checkPidList, $this->fe_user_groups,$username_column ,$userident_column,$usergroup_column);
+				$user = $this->getUserStorage ()->getUser ( $profile, $table, $check_pid_clause, $enable_clause );
+			}
+			catch (Exception $e) {
+				 t3lib_div::devLog('error on creating user:'.$e->getMessage(),'rpx');
+				 throw $e;
+			}
 			t3lib_div::devLog('new user created', 'rpx');
 		}
 		return $user;
