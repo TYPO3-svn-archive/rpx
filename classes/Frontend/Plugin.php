@@ -85,7 +85,7 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 				$js .= 'RPXNOW.language_preference = '.$this->LLkey.';'.PHP_EOL;
 				$GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('tx_rpx',$js, FALSE);
 				$url = $this->getRPXDomain().'openid/v2/signin?token_url=' . $tokenUrl;
-				$content = '<br/><br/><br/><br/><br/><a class="rpxnow" onclick="return false;" href="' . $url . '"> '.$this->pi_getLL('sign_in_label').' </a>';
+				$content = '<a class="rpxnow" onclick="return false;" href="' . $url . '"> '.$this->pi_getLL('sign_in_label').' </a>';
 			}
 		}
 		return $this->pi_wrapInBaseClass ( $content );
