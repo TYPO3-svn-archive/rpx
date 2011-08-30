@@ -78,11 +78,11 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 				$url = $this->getRPXDomain().'openid/embed?token_url=' . $tokenUrl;
 				$content = ' <iframe src="' . $url . '"  scrolling="no"  frameBorder="no" allowtransparency="true"  style="width:400px;height:240px"></iframe> ';
 			} else {
-				$js = '';
+				$js = 'RPXNOW = {};';
 				$js .= 'var rpxJsHost = (("https:" == document.location.protocol) ? "https://" : "http://static.");'.PHP_EOL;
 				$js .= 'var rpxJsHost = document.write(unescape("%3Cscript src=\'" + rpxJsHost + "rpxnow.com/js/lib/rpx.js\' type=\'text/javascript\'%3E%3C/script%3E"));'.PHP_EOL;
 				$js .= 'RPXNOW.overlay = true;'.PHP_EOL;
-				$js .= 'RPXNOW.language_preference = '.$this->LLkey.';'.PHP_EOL;
+				$js .= 'RPXNOW.language_preference = "'.$this->LLkey.'";'.PHP_EOL;
 				$GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('tx_rpx',$js, FALSE);
 				$url = $this->getRPXDomain().'openid/v2/signin?token_url=' . $tokenUrl;
 				$content = '<a class="rpxnow" onclick="return false;" href="' . $url . '"> '.$this->pi_getLL('sign_in_label').' </a>';
