@@ -189,7 +189,7 @@ RPX_JS;
 	private function getTokenUrl() {
 		$url = $this->getReturnUrl ();
 		$url = $this->addLoginParameters ( $url );
-		return urlencode ( $url );
+		return  $url ;
 	}
 	/**
 	 * @param string $pid
