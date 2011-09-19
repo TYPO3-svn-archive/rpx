@@ -2,6 +2,8 @@
 api_key =
 	# cat=basic//10; type=input; label=RPX Domain
 rpx_domain =
+        # cat=basic//10; type=input; label=RPX Project Name 
+rpx_project =
 	# cat=basic//10; type=input; label=Imported fe_user prefix
 imported_fe_user_prefix = tx_rpx
 	# cat=basic//10; type=input; label=Allowed Domains: (with semicolon seperated, Example: example.com  or *.example.com)

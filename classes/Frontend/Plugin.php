@@ -100,15 +100,16 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
     e.id = 'janrainAuthWidget';
 
     if (document.location.protocol === 'https:') {
-      e.src = 'https://rpxnow.com/js/lib/connectedcar-test/engage.js';
+      e.src = 'https://rpxnow.com/js/lib/###PROJECTNAME###/engage.js';
     } else {
-      e.src = 'http://widget-cdn.rpxnow.com/js/lib/connectedcar-test/engage.js';
+      e.src = 'http://widget-cdn.rpxnow.com/js/lib/###PROJECTNAME###/engage.js';
     }
 
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(e, s);
 })();
 RPX_JS;
+				$js = str_replace('###PROJECTNAME###',$this->getRPXProjectName(),$js);
 
 
 				$GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('tx_rpx',$js, FALSE);
@@ -183,6 +184,11 @@ RPX_JS;
 	private function getRPXDomain(){
 		return $this->ext_conf['rpx_domain'];
 	}
+	
+	private function getRPXProjectName() {
+		return $this->ext_conf['rpx_project'];
+	}
+
 	/**
 	 * @return string
 	 */
