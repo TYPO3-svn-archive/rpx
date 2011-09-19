@@ -162,6 +162,9 @@ RPX_JS;
 		} elseif($staticRedirectPageId !== NULL && (integer) $staticRedirectPageId > 0) {
 			$url = $this->getUrl($staticRedirectPageId);
 		}
+		else {
+			$url = $this->getUrl($GLOBALS['TSFE']->id);
+		}
 		return $url;
 	}
 	/**
