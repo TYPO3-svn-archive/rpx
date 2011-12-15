@@ -175,7 +175,7 @@ RPX_JS;
 		$conf['parameter'] = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'returnUrlPid');
 		$conf['returnLast'] = 'url';
 		$conf['forceAbsoluteUrl'] = TRUE;
-		$conf['forceAbsoluteUrl.']['scheme'] = 'https';
+		$conf['forceAbsoluteUrl.']['scheme'] = t3lib_div::getIndpEnv('TYPO3_SSL') ? 'https' : 'http';
 		$conf['additionalParams'] = array();
 		
 		$url = $this->cObj->typoLink('',$conf);
