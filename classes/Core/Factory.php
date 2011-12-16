@@ -59,6 +59,15 @@ class tx_rpx_Core_Factory {
 				if (isset ( $simpleXMLElement->profile->name->formatted )) {
 					$profile->setFormattedName ( ( string ) $simpleXMLElement->profile->name->formatted );
 				}
+				if (isset ( $simpleXMLElement->profile->name->middleName )) {
+					$profile->setMiddleName( ( string ) $simpleXMLElement->profile->name->middleName );
+				}
+				if (isset ( $simpleXMLElement->profile->name->honorificPrefix )) {
+					$profile->setHonorificPrefix( ( string ) $simpleXMLElement->profile->name->honorificPrefix );
+				}
+				if (isset ( $simpleXMLElement->profile->name->honorificSuffix )) {
+					$profile->setHonorificSuffix( ( string ) $simpleXMLElement->profile->name->honorificSuffix );
+				}
 			}
 			if (isset ( $simpleXMLElement->profile->preferredUsername )) {
 				$profile->setPreferredUsername ( ( string ) $simpleXMLElement->profile->preferredUsername );

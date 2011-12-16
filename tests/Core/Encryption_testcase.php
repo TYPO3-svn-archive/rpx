@@ -56,7 +56,7 @@ class Core_Encryption_testcase extends tx_phpunit_testcase {
 		$this->encryption = null;
 		parent::tearDown ();
 	}
-/**
+	/**
 	 * Tests tx_rpx_Core_Encryption->encrypt()
 	 * @test
 	 * @expectedException tx_rpx_Core_Exception

@@ -2,6 +2,16 @@
 if (!defined ('TYPO3_MODE')) {
  	die ('Access denied.');
 }
+
+	// Register cache t3lib_l10n
+if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['rpx'])) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['rpx'] = array();
+}
+
+if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['rpx']['backend'])) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['rpx']['backend'] = 't3lib_cache_backend_FileBackend';
+}
+
 t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_rpx_sv1' /* sv key */,
 		array(
 			'title' => 'RPX Auth Service',

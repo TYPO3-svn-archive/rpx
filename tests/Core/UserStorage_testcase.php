@@ -64,10 +64,12 @@ class Core_UserStorage_testcase extends tx_phpunit_database_testcase {
 	 * @test
 	 */
 	public function add() {
+			/* @var $configuration tx_rpx_Configuration_Configuration */
+		$configuration = t3lib_div::makeInstance('tx_rpx_Configuration_Configuration');
+		$configuration->setImportFields('displayName:name;verifiedEmail:email;url:www;country:country;locality:city;postalCode:zip;addressFormatted:address');
 		$profile = new tx_rpx_Core_Profile ();
 		$profile->setIdentifier ( uniqid ( 'identitier' ) );
 		$this->userStorage->add ( $profile, 'testprefix', 'fe_users', 2, '1,2', 'username', 'password', 'usergroup' );
-	
 	}
 	/**
 	 * Tests tx_rpx_Core_UserStorage->getUser()
@@ -84,9 +86,9 @@ class Core_UserStorage_testcase extends tx_phpunit_database_testcase {
 	 * @test
 	 */
 	public function getUser() {
-		$conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['rpx'] );
-		$conf ['import_fields'] = 'displayName:name;verifiedEmail:email;photo:image;url:www;country:country;locality:city;postalCode:zip;addressFormatted:address';
-		$GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['rpx'] = serialize($conf);
+			/* @var $configuration tx_rpx_Configuration_Configuration */
+		$configuration = t3lib_div::makeInstance('tx_rpx_Configuration_Configuration');
+		$configuration->setImportFields('displayName:name;verifiedEmail:email;photo:image;url:www;country:country;locality:city;postalCode:zip;addressFormatted:address');
 		$profile = new tx_rpx_Core_Profile ();
 		$profile->setIdentifier ( uniqid ('setIdentifier') );
 		$profile->setVerifiedEmail ( uniqid ('setVerifiedEmail') );

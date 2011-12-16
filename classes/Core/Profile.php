@@ -48,6 +48,18 @@ class tx_rpx_Core_Profile {
 	/**
 	 * @var string
 	 */
+	private $middleName;
+	/**
+	 * @var string
+	 */
+	private $honorificPrefix;
+	/**
+	 * @var string
+	 */
+	private $honorificSuffix;
+	/**
+	 * @var string
+	 */
 	private $familyName;
 	/**
 	 * @var string
@@ -113,6 +125,48 @@ class tx_rpx_Core_Profile {
 	 * @var string
 	 */
 	private $country;
+	/**
+	 * @return the $middleName
+	 */
+	public function getMiddleName() {
+		return $this->middleName;
+	}
+
+	/**
+	 * @return the $honorificPrefix
+	 */
+	public function getHonorificPrefix() {
+		return $this->honorificPrefix;
+	}
+
+	/**
+	 * @return the $honorificSuffix
+	 */
+	public function getHonorificSuffix() {
+		return $this->honorificSuffix;
+	}
+
+	/**
+	 * @param string $middleName
+	 */
+	public function setMiddleName($middleName) {
+		$this->middleName = $middleName;
+	}
+
+	/**
+	 * @param string $honorificPrefix
+	 */
+	public function setHonorificPrefix($honorificPrefix) {
+		$this->honorificPrefix = $honorificPrefix;
+	}
+
+	/**
+	 * @param string $honorificSuffix
+	 */
+	public function setHonorificSuffix($honorificSuffix) {
+		$this->honorificSuffix = $honorificSuffix;
+	}
+
 	/**
 	 * @return string
 	 */

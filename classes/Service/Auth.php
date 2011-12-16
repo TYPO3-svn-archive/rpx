@@ -25,7 +25,9 @@
  * Service to authentify the user with rpx
  */
 
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Configuration/Configuration.php';
 require_once t3lib_extMgm::extPath ( 'sv' ) . 'class.tx_sv_auth.php';
+
 /**
  * Service "RPX Auth Service" for the "rpx" extension.
  * 
@@ -34,6 +36,10 @@ require_once t3lib_extMgm::extPath ( 'sv' ) . 'class.tx_sv_auth.php';
  * @author	Axel Jung <axel.jung@aoemedia.de>
  */
 class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
+	/**
+	 * @var tx_rpx_Configuration_Configuration
+	 */
+	protected $configuration;
 	/**
 	 * @var string
 	 */
@@ -84,17 +90,18 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	 */
 	public function init() {
 		$available = parent::init ();
-		$this->conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] [$this->extKey] );
+		$this->configuration = t3lib_div::makeInstance('tx_rpx_Configuration_Configuration');
+		$this->configuration->initConfigurationForHash(t3lib_div::_GET('configurationHash'));
+		
 		if (FALSE === isset ( $GLOBALS ['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
 			return FALSE;
 		}
-		if (FALSE === isset ( $this->conf ['api_key'] )) {
+		if ( !$this->configuration->getAPIKey() ) {
 			return FALSE;
 		}
-		if (FALSE === isset ( $this->conf ['rpx_domain'] )) {
+		if ( !$this->configuration->getRPXDomain() ) {
 			return FALSE;
 		}
-		
 		
 		return $available;
 	}
@@ -176,7 +183,7 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 		if (FALSE === isset ( $this->connector )) {
 			require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . 'Connector.php';
 			
-			$this->connector = t3lib_div::makeInstance ( 'tx_rpx_Core_Connector', $this->conf ['api_key'], $this->conf ['rpx_domain'] );
+			$this->connector = t3lib_div::makeInstance ( 'tx_rpx_Core_Connector', $this->configuration->getAPIKey(), $this->configuration->getRPXDomain() );
 		}
 		return $this->connector;
 	}
@@ -204,7 +211,7 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	 * @return boolean
 	 */
 	private function isImportedLoginName() {
-		return FALSE !== stripos ( $this->username, $this->conf ['imported_fe_user_prefix'] );
+		return FALSE !== stripos ( $this->username, $this->configuration->getImportedFEUserPrefix() );
 	}
 	/**
 	 * @param tx_rpx_Core_Profile $profile
@@ -212,7 +219,7 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	 */
 	private function autoCreateUser(tx_rpx_Core_Profile $profile) {
 		$table = $this->authInfo ['db_user'] ['table'];
-		$prefix = $this->conf ['imported_fe_user_prefix'];
+		$prefix = $this->configuration->getImportedFEUserPrefix();
 		$check_pid_clause = $this->authInfo ['db_user'] ['check_pid_clause'];
 		$enable_clause = $this->authInfo ['db_user'] ['enable_clause'];
 		$checkPidList = $this->authInfo ['db_user'] ['checkPidList'];
@@ -241,8 +248,8 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	 * @throws tx_rpx_Core_Exception
 	 */
 	private function checkDomain(){
-		if(isset($this->conf['allowed_domains']) && !empty($this->conf['allowed_domains']) && null !== $this->authInfo['HTTP_HOST']){
-			$domains = explode(';',$this->conf['allowed_domains']);
+		if ( $this->configuration->getAllowedDomains() && null !== $this->authInfo['HTTP_HOST']){
+			$domains = explode(';',$this->configuration->getAllowedDomains());
 			$host = $this->authInfo['HTTP_HOST'];
 			foreach($domains as $domain){
 				$domain = trim($domain);
@@ -263,6 +270,7 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 			throw new tx_rpx_Core_Exception('invalid domain: '.$host);
 		}
 	}
+	
 	/**
 	 * @return string
 	 */
@@ -274,6 +282,7 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 		$params['pid'] = $_GET ['pid'];
 		$params['fe_groups'] = $_GET ['fe_groups'];
 		$params['redirect'] = $_GET ['redirect'];
+		$params['configurationHash'] = $_GET ['configurationHash'];
 		$params['error'] = $_GET ['error'];
 		$verify = $_GET ['verify'];
 		$this->getEncryption ()->validate ($params,$verify );

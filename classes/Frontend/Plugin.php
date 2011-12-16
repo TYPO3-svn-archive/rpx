@@ -26,6 +26,7 @@
  * Frontend Plugin to render the login box of the RPX
  */
 require_once (PATH_tslib . 'class.tslib_pibase.php');
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Configuration/Configuration.php';
 require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR.'Core'.DIRECTORY_SEPARATOR. 'Encryption.php';
 /**
  * Plugin 'RPX Login Box' for the 'rpx' extension.
@@ -55,7 +56,11 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 	 * @var array
 	 */
 	private $ext_conf;
-
+	/**
+	 * @var tx_rpx_Configuration_Configuration
+	 */
+	private $configuration;
+	
 	/**
 	 * The main method of the PlugIn
 	 *
@@ -64,8 +69,9 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 	 * @return	The content that is displayed on the website
 	 */
 	public function main($content, $conf) {
-		$this->conf = $conf;
-		$this->ext_conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] [$this->extKey] );
+		$this->configuration = t3lib_div::makeInstance('tx_rpx_Configuration_Configuration');
+		$this->configuration->initConfigurationForTSArray($conf);
+		
 		$this->pi_setPiVarDefaults ();
 		$this->pi_loadLL ();
 		$this->pi_initPIflexForm ();
@@ -75,7 +81,7 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 			$content = $this->pi_getLL('config_warning');
 		}else{
 			if ($displayMode === 'embedded') {
-				$url = $this->getRPXDomain().'openid/embed?token_url=' . $tokenUrl;
+				$url = $this->configuration->getRPXDomain().'openid/embed?token_url=' . $tokenUrl;
 				$content = ' <iframe src="' . $url . '"  scrolling="no"  frameBorder="no" allowtransparency="true"  style="width:400px;height:240px"></iframe> ';
 			} else {
 				
@@ -109,11 +115,11 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
     s.parentNode.insertBefore(e, s);
 })();
 RPX_JS;
-				$js = str_replace('###PROJECTNAME###',$this->getRPXProjectName(),$js);
+				$js = str_replace('###PROJECTNAME###',$this->configuration->getRPXProjectName(),$js);
 
 
 				$GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('tx_rpx',$js, FALSE);
-				$url = $this->getRPXDomain().'openid/v2/signin?token_url=' . $tokenUrl;
+				$url = $this->configuration->getRPXDomain().'openid/v2/signin?token_url=' . $tokenUrl;
 				$content = '<a class="janrainEngage" onclick="return false;" href="#"> '.$this->pi_getLL('sign_in_label').' </a>';
 			}
 		}
@@ -141,6 +147,7 @@ RPX_JS;
 		if(NULL !== $redirectUrl = $this->getRedirectUrl()) {
 			$params['redirect'] = $redirectUrl;
 		}
+		$params['configurationHash'] = $this->configuration->getConfigurationHash();
 		$params['error'] = $this->getUrl($this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'errorPid'));
 		$url .= '&verify='.$encryption->creatHash($params);
 		foreach($params as $key=>$value){
@@ -156,7 +163,7 @@ RPX_JS;
 	private function getRedirectUrl() {
 		$url = NULL;
 		$staticRedirectPageId  = $this->pi_getFFvalue ( $this->cObj->data ['pi_flexform'], 'redirectPageId');
-		$dynamicRedirectPageId = t3lib_div::_GP( $this->ext_conf['redirect_parameter'] );
+		$dynamicRedirectPageId = t3lib_div::_GP( $this->configuration->getRedirectParameter() );
 		if($dynamicRedirectPageId !== NULL && (integer) $dynamicRedirectPageId > 0) {
 			$url = $this->getUrl( $dynamicRedirectPageId );
 		} elseif($staticRedirectPageId !== NULL && (integer) $staticRedirectPageId > 0) {
@@ -180,16 +187,6 @@ RPX_JS;
 		
 		$url = $this->cObj->typoLink('',$conf);
 		return $url;
-	}
-	/**
-	 * @return string
-	 */
-	private function getRPXDomain(){
-		return $this->ext_conf['rpx_domain'];
-	}
-	
-	private function getRPXProjectName() {
-		return $this->ext_conf['rpx_project'];
 	}
 
 	/**
@@ -216,7 +213,7 @@ RPX_JS;
 	 * @return boolean
 	 */
 	private function isConfigured(){
-		if(!isset($this->ext_conf['rpx_domain']) || '' == trim($this->ext_conf['rpx_domain'])){
+		if( !$this->configuration->getRPXDomain() || '' == trim($this->configuration->getRPXDomain())){
 			return FALSE;
 		}else{
 			return TRUE;

@@ -91,8 +91,9 @@ class Service_Auth_testcase extends tx_phpunit_testcase {
 	 * @test
 	 */
 	public function getUserWithInvalidUsername() {
-		$conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['rpx'] );
-		$prefix = $conf ['imported_fe_user_prefix'];
+			/* @var $configuration tx_rpx_Configuration_Configuration */
+		$configuration = t3lib_div::makeInstance('tx_rpx_Configuration_Configuration');
+		$prefix = $configuration->getImportedFEUserPrefix();
 		$this->auth->initAuth ( 'getUser', array ('uname' => $prefix . 'test', 'status' => 'login' ), array () );
 		$user = $this->auth->getUser ();
 		$this->assertType ( 'array', $user );

@@ -33,6 +33,18 @@ require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . 'DatabaseException.php
  */
 class tx_rpx_Core_UserStorage {
 	/**
+	 * @var tx_rpx_Configuration_Configuration
+	 */
+	protected $configuration;
+
+	/**
+	 * constructor
+	 */
+	public function __construct() {
+		$this->configuration = t3lib_div::makeInstance('tx_rpx_Configuration_Configuration');
+	}
+	
+	/**
 	 * @param tx_rpx_Core_Profile $profile
 	 * @param string $prefix
 	 * @param string $table
@@ -83,9 +95,9 @@ class tx_rpx_Core_UserStorage {
 	 * @return array
 	 */
 	protected function importFields(tx_rpx_Core_Profile $profile, array $values) {
-		$conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['rpx'] );
-		if (! empty ( $conf ['import_fields'] )) {
-			foreach ( explode ( ';', $conf ['import_fields'] ) as $fields ) {
+		$importFields = $this->configuration->getImportFields($profile->getProviderName());
+		if (! empty ( $importFields )) {
+			foreach ( explode ( ';', $importFields ) as $fields ) {
 				list ( $rpxField, $userField ) = explode ( ':', $fields );
 				$method = 'get' . ucfirst ( $rpxField );
 				if (method_exists ( $profile, $method )) {
