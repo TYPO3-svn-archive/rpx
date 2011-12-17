@@ -113,5 +113,39 @@ class Core_UserStorage_testcase extends tx_phpunit_database_testcase {
 		$this->assertEquals ( $profile->getPostalCode (), $record ['zip'] );
 		$this->assertEquals ( $profile->getAddressFormatted (), $record ['address'] );
 	}
+	/**
+	 * Tests tx_rpx_Core_UserStorage->getUser() and tx_rpx_Transform_RegexTransformator->transform()
+	 * @test
+	 */
+	public function getUserWithTransformator() {
+			/* @var $configuration tx_rpx_Configuration_Configuration */
+		$configuration = t3lib_div::makeInstance('tx_rpx_Configuration_Configuration');
+		$configuration->setImportFields('displayName:name Regex(pattern="/^(.*)$/", replacement="prefix $1 postfix");verifiedEmail:email');
+		$profile = new tx_rpx_Core_Profile ();
+		$profile->setIdentifier ( uniqid ('setIdentifier') );
+		$displayName = uniqid ('setDisplayName');
+		$profile->setDisplayName ( $displayName );
+		$this->userStorage->add ( $profile, 'testprefix', 'fe_users', 2, '1,2', 'username', 'password', 'usergroup' );
+		$record = $this->userStorage->getUser ( $profile, 'fe_users' );
+		$this->assertEquals ( $profile->getIdentifier (), $record ['tx_rpx_identifier'] );
+		$this->assertEquals ( 'prefix ' . $profile->getDisplayName () . ' postfix', $record ['name'] );
+	}	
+	/**
+	 * Tests tx_rpx_Core_UserStorage->getUser() and tx_rpx_Transform_RegexTransformator->transform()
+	 * @test
+	 */
+	public function getUserWithMultipleTransformators() {
+			/* @var $configuration tx_rpx_Configuration_Configuration */
+		$configuration = t3lib_div::makeInstance('tx_rpx_Configuration_Configuration');
+		$configuration->setImportFields('displayName:name "Regex(pattern=""/^(.*)$/"", replacement=""prefix-1st $1 postfix-1st"")" | "Regex(pattern=""/^(.*)$/"", replacement=""prefix-2nd $1 postfix-2nd"")";verifiedEmail:email');
+		$profile = new tx_rpx_Core_Profile ();
+		$profile->setIdentifier ( uniqid ('setIdentifier') );
+		$displayName = uniqid ('setDisplayName');
+		$profile->setDisplayName ( $displayName );
+		$this->userStorage->add ( $profile, 'testprefix', 'fe_users', 2, '1,2', 'username', 'password', 'usergroup' );
+		$record = $this->userStorage->getUser ( $profile, 'fe_users' );
+		$this->assertEquals ( $profile->getIdentifier (), $record ['tx_rpx_identifier'] );
+		$this->assertEquals ( 'prefix-2nd prefix-1st ' . $profile->getDisplayName () . ' postfix-1st postfix-2nd', $record ['name'] );
+	}		
 }
 

@@ -3,7 +3,7 @@ if (!defined ('TYPO3_MODE')) {
  	die ('Access denied.');
 }
 
-	// Register cache t3lib_l10n
+	// Register cache rpx
 if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['rpx'])) {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['rpx'] = array();
 }

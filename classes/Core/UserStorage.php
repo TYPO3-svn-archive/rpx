@@ -24,6 +24,7 @@
 
 require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . 'UserNotFoundException.php';
 require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . 'DatabaseException.php';
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Transform/Resolver.php';
 
 /**
  * Import the Profile in FE User Table
@@ -31,17 +32,23 @@ require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . 'DatabaseException.php
  * @package	TYPO3
  * @subpackage	tx_rpx
  */
-class tx_rpx_Core_UserStorage {
+class tx_rpx_Core_UserStorage {		
 	/**
 	 * @var tx_rpx_Configuration_Configuration
 	 */
 	protected $configuration;
 
 	/**
+	 * @var tx_rpx_Transform_Resolver
+	 */
+	protected $transformatorResolver;
+	
+	/**
 	 * constructor
 	 */
 	public function __construct() {
 		$this->configuration = t3lib_div::makeInstance('tx_rpx_Configuration_Configuration');
+		$this->transformatorResolver = t3lib_div::makeInstance('tx_rpx_Transform_Resolver');
 	}
 	
 	/**
@@ -83,12 +90,14 @@ class tx_rpx_Core_UserStorage {
 		}
 		return $record [0];
 	}
+	
 	/**
 	 * @return t3lib_DB
 	 */
 	protected function getDb() {
 		return $GLOBALS ['TYPO3_DB'];
 	}
+	
 	/**
 	 * @param tx_rpx_Core_Profile $profile
 	 * @param array $values
@@ -97,11 +106,18 @@ class tx_rpx_Core_UserStorage {
 	protected function importFields(tx_rpx_Core_Profile $profile, array $values) {
 		$importFields = $this->configuration->getImportFields($profile->getProviderName());
 		if (! empty ( $importFields )) {
-			foreach ( explode ( ';', $importFields ) as $fields ) {
-				list ( $rpxField, $userField ) = explode ( ':', $fields );
+			foreach ( t3lib_div::trimExplode ( ';', $importFields ) as $fields ) {
+				list ( $rpxField, $userFieldWithTransformatorDefinition ) = t3lib_div::trimExplode ( ':', $fields );
+				list ( $userField, $transformatorDefinition ) = t3lib_div::trimExplode ( ' ', $userFieldWithTransformatorDefinition, true, 2 );
+				$transformatorConfiguration = $this->transformatorResolver->parseTransformAnnotation($transformatorDefinition);
 				$method = 'get' . ucfirst ( $rpxField );
 				if (method_exists ( $profile, $method )) {
-					$values [$userField] = call_user_func (array(  $profile, $method) );
+					$userFieldValue = call_user_func (array(  $profile, $method) );
+					foreach ($transformatorConfiguration['transformators'] as $transformator) {
+						$transformator = $this->transformatorResolver->createTransformator($transformator['transformatorName'], $transformator['transformOptions']);
+						$userFieldValue = $transformator->transform($userFieldValue);
+					}
+					$values [$userField] = $userFieldValue;
 				}
 			}
 		}
