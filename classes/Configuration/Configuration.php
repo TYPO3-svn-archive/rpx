@@ -22,6 +22,7 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Configuration/ConfigurationException.php';
 require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Core/Encryption.php';
 
 /**
@@ -106,10 +107,12 @@ class tx_rpx_Configuration_Configuration implements t3lib_Singleton {
 	 * @param unknown_type $configurationHash
 	 */
 	public function initConfigurationForHash($configurationHash) {
-		if ($configurationHash && $this->cacheInstance->has($configurationHash)) {
-			$this->configuration = $this->cacheInstance->get($configurationHash);
-		} else {
-			// TODO: throw Exception
+		if ($configurationHash) {
+			if ($this->cacheInstance->has($configurationHash)) {
+				$this->configuration = $this->cacheInstance->get($configurationHash);
+			} else {
+				throw new tx_rpx_Configuration_ConfigurationException( 'No cached configuration found!' );
+			}
 		}
 	}
 	

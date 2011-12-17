@@ -22,28 +22,10 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class tx_rpx_Transform_RegexTransformator extends tx_rpx_Transform_AbstractTransformator {
+class tx_rpx_Configuration_ConfigurationException extends Exception {
 
-	/**
-	 * Transforms the value based on the selected options
-	 *
-	 * @param mixed $value The value that should be transformed
-	 * @return string
-	 * @api
-	 */
-	public function transform($value) {
-		if (!isset($this->options['pattern'])) {
-			throw new tx_rpx_Transform_TransformException( 'No pattern parameter specified for the Regex transformator!' );
-		}
-		if (!isset($this->options['replacement'])) {
-			throw new tx_rpx_Transform_TransformException( 'No replacement parameter specified for the Regex transformator!' );
-		}
-		if (!isset($this->options['limit'])) {
-			$this->options['limit'] = -1;
-		}
-
-		return preg_replace($this->options['pattern'], $this->options['replacement'], $value, $this->options['limit']);
-	}
 }
 
-?>
+if (defined ( 'TYPO3_MODE' ) && $TYPO3_CONF_VARS [TYPO3_MODE] ['XCLASS'] ['ext/rpx/classes/Configuration/ConfigurationException.php']) {
+	include_once ($TYPO3_CONF_VARS [TYPO3_MODE] ['XCLASS'] ['ext/rpx/classes/Configuration/ConfigurationException.php']);
+}

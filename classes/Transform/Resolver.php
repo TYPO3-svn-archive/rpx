@@ -22,9 +22,11 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Transform/TransformException.php';
 require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Transform/TransformatorInterface.php';
 require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Transform/AbstractTransformator.php';
 require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Transform/RegexTransformator.php';
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Transform/RemoteFileTransformator.php';
 
 class tx_rpx_Transform_Resolver implements t3lib_Singleton {
 	/**
