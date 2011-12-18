@@ -1,0 +1,28 @@
+
+plugin.tx_rpx.persistence {
+	classes {
+		Tx_Rpx_Domain_Model_FrontendUser {
+			mapping {
+				tableName = fe_users
+				recordType = Tx_Rpx_Domain_Model_FrontendUser
+			}
+		}
+	}
+}
+
+module.tx_rpx < plugin.tx_rpx
+
+config.tx_extbase.persistence {
+	classes {
+		Tx_Rpx_Domain_Model_FrontendUser {
+			mapping {
+				tableName = fe_users
+				recordType = Tx_Rpx_Domain_Model_FrontendUser
+				columns {
+					tx_rpx_identifier.mapOnProperty = rpxIdentifier
+					tx_rpx_provider.mapOnProperty = rpxProvider
+				}
+			}
+		}
+	}
+}

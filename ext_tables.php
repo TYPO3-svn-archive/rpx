@@ -2,6 +2,8 @@
 if (!defined ('TYPO3_MODE')) 
 	die ('Access denied.');
 
+t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/', 'RPX');
+	
 t3lib_div::loadTCA('fe_users');
 $tempColumns = array(
 	'tx_rpx_identifier' => array(
@@ -24,6 +26,11 @@ $tempColumns = array(
 		)
 	),
 );
+
+if (t3lib_extMgm::isLoaded('extbase')) {
+	$TCA['fe_users']['types']['Tx_Rpx_Domain_Model_FrontendUser'] = $TCA['fe_users']['types']['Tx_Extbase_Domain_Model_FrontendUser'];	
+	$TCA['fe_users']['columns']['tx_extbase_type']['config']['items'][] = Array('Tx_Rpx_Domain_Model_FrontendUser', 'Tx_Rpx_Domain_Model_FrontendUser');
+}
 
 t3lib_extMgm::addTCAcolumns('fe_users', $tempColumns, 1);	
 t3lib_extMgm::addToAllTCAtypes('fe_users', '--div--;LLL:EXT:rpx/locallang_db.xml:fe_users.div.rpx, tx_rpx_identifier, tx_rpx_provider');
