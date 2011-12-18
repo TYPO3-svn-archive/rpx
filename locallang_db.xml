@@ -7,6 +7,9 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="tt_content.list_type_pi1">RPX Login Box</label>
+			<label index="fe_users.div.rpx">RPX</label>
+			<label index="fe_users.tx_rpx_identifier">Identifier</label>
+			<label index="fe_users.tx_rpx_provider">Provider</label>
 		</languageKey>
 	</data>
 </T3locallang>

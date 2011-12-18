@@ -25,7 +25,7 @@
  * Service to authentify the user with rpx
  */
 
-require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Configuration/Configuration.php';
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'Classes/Configuration/Configuration.php';
 require_once t3lib_extMgm::extPath ( 'sv' ) . 'class.tx_sv_auth.php';
 
 /**
@@ -47,7 +47,7 @@ class tx_rpx_Service_Auth extends tx_sv_auth implements t3lib_Singleton {
 	/**
 	 * @var string
 	 */
-	protected $scriptRelPath = 'classes/Service/Auth.php'; // Path to this script relative to the extension dir.
+	protected $scriptRelPath = 'Classes/Service/Auth.php'; // Path to this script relative to the extension dir.
 	/**
 	 * @var string
 	 */

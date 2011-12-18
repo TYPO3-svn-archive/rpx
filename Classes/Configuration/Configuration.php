@@ -22,8 +22,8 @@
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Configuration/ConfigurationException.php';
-require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Core/Encryption.php';
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'Classes/Configuration/ConfigurationException.php';
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'Classes/Core/Encryption.php';
 
 /**
  * Configuration used by the extensions

@@ -3,6 +3,8 @@ if (!defined ('TYPO3_MODE')) {
  	die ('Access denied.');
 }
 
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'Classes/UserFunc/FEUser.php';
+
 	// Register cache rpx
 if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['rpx'])) {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['rpx'] = array();
@@ -22,9 +24,9 @@ t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_rpx_sv1' /* sv ke
 			'quality' => 56,
 			'os' => '',
 			'exec' => '',
-			'classFile' => t3lib_extMgm::extPath($_EXTKEY).'classes/Service/Auth.php',
+			'classFile' => t3lib_extMgm::extPath($_EXTKEY).'Classes/Service/Auth.php',
 			'className' => 'tx_rpx_Service_Auth',
 		)
 	);
-t3lib_extMgm::addPItoST43($_EXTKEY, 'classes/Frontend/Plugin.php', '_Frontend_Plugin', 'list_type', 1);
+t3lib_extMgm::addPItoST43($_EXTKEY, 'Classes/Frontend/Plugin.php', '_Frontend_Plugin', 'list_type', 1);
 ?>

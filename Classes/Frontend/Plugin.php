@@ -26,7 +26,7 @@
  * Frontend Plugin to render the login box of the RPX
  */
 require_once (PATH_tslib . 'class.tslib_pibase.php');
-require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Configuration/Configuration.php';
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'Classes/Configuration/Configuration.php';
 require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR.'Core'.DIRECTORY_SEPARATOR. 'Encryption.php';
 /**
  * Plugin 'RPX Login Box' for the 'rpx' extension.
@@ -43,7 +43,7 @@ class tx_rpx_Frontend_Plugin extends tslib_pibase {
 	/**
 	 * @var string
 	 */
-	public $scriptRelPath = 'classes/Frontend/Plugin.php'; // Path to this script relative to the extension dir.
+	public $scriptRelPath = 'Classes/Frontend/Plugin.php'; // Path to this script relative to the extension dir.
 	/**
 	 * @var string
 	 */

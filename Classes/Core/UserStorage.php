@@ -24,7 +24,7 @@
 
 require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . 'UserNotFoundException.php';
 require_once dirname ( __FILE__ ) . DIRECTORY_SEPARATOR . 'DatabaseException.php';
-require_once t3lib_extMgm::extPath ( 'rpx' ) . 'classes/Transform/Resolver.php';
+require_once t3lib_extMgm::extPath ( 'rpx' ) . 'Classes/Transform/Resolver.php';
 
 /**
  * Import the Profile in FE User Table
@@ -64,6 +64,7 @@ class tx_rpx_Core_UserStorage {
 	public function add(tx_rpx_Core_Profile $profile, $prefix, $table, $pid, $groups, $username_column, $userident_column, $usergroup_column) {
 		$values = array ();
 		$values ['tx_rpx_identifier'] = $profile->getIdentifier ();
+		$values ['tx_rpx_provider'] = $profile->getProviderName ();
 		$values [$username_column] = uniqid ( $prefix );
 		$values [$userident_column] = uniqid ( $prefix );
 		$values ['pid'] = $pid;
