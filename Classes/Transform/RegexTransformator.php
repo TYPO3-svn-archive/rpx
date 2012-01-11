@@ -45,7 +45,7 @@ class tx_rpx_Transform_RegexTransformator extends tx_rpx_Transform_AbstractTrans
 		$result = preg_replace($this->options['pattern'], $this->options['replacement'], $value, $this->options['limit'], $count);
 		if (isset($this->options['blankOnNoMatch']) && $count==0) {
 			$result = '';
-		}error_log(print_r($this->options, 1));
+		}
 		
 		return $result;
 	}
