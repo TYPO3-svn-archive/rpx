@@ -29,4 +29,9 @@ t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_rpx_sv1' /* sv ke
 		)
 	);
 t3lib_extMgm::addPItoST43($_EXTKEY, 'Classes/Frontend/Plugin.php', '_Frontend_Plugin', 'list_type', 1);
+
+if (t3lib_extMgm::isLoaded('aoe_login')) {
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aoe_login']['filterUsers'][] = 'EXT:rpx/Classes/Hook/AoeLogin.php:&Tx_Rpx_Hook_AoeLogin->filterUsers';	
+}
+
 ?>
