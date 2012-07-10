@@ -80,6 +80,7 @@ class tx_rpx_Transform_RemoteFileTransformator extends tx_rpx_Transform_Abstract
 				$uniqueFilename = $basicFileFunctions->getUniqueName($filename, $destinationFolder);
 
 				if (rename($tempName, $uniqueFilename)) {
+					t3lib_div::fixPermissions($uniqueFilename);
 					$result = basename($uniqueFilename);
 				}
 			} else {
